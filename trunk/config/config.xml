@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- kafka消息队列相关配置 -->
+	<kafka>
+		<url>192.168.23.128:2181</url>
+	</kafka>
+
+	<appSetting>
+		<!-- 转出目录,将会根据厂商创建目录 -->
+		<outputDir>F:/switch100/output</outputDir>
+		<!-- 错误目录,将会根据厂商创建目录,转换错误之后将数据写入记事本 -->
+		<errorDir>F:/switch100/error</errorDir>
+		<!-- 临时目录,用于解压/压缩临时目录，程序会自动删除处理后的文件 -->
+		<tempDir>F:/switch100/temp</tempDir>
+		<!-- 转换日志目录(数据质量文件) -->
+		<convertLogDir>F:/switch100/convertLog</convertLogDir>
+	</appSetting>
+
+	<!-- 厂商任务配置 -->
+	<firms>
+		<!-- id:厂商编码 name:厂商名称 convertDic:厂商字典格式化地址,可为空 -->
+		<firm id="796965958" name="重庆爱思网安" convertDic="/config/firms/wz/convertDic.xml">
+			<task id="0001" topic="WifiTerminalInfoLog">
+				<!-- 索引文件配置 -->
+				<indexPath>/config/firms/wz/WA_SOURCE_FJ_0001/WA_SOURCE_FJ_0001.xml</indexPath>
+				<indexName>WA_SOURCE_FJ_0001.xml</indexName>
+				<!-- 数据文件配置 -->
+				<dataPath>/config/firms/wz/WA_SOURCE_FJ_0001/list.xml</dataPath>
+				<dataName>145-511100-@@timeint-@@sequence5-WA_SOURCE_0005-0.bcp</dataName>
+				<!-- 压缩文件名称 -->
+				<zipName>145-765941742-511100-@@regionid-@@timeint-@@sequence5.zip</zipName>
+				<!-- 数据文件类型,json、xml、zbf(制表符) -->
+				<dataType>zbf</dataType>
+				<!-- 是否按区域上报,默认为false。default表示不能按区域上报的数据默认区域编码 -->
+				<regionReport default="500000">1</regionReport>
+				<filter>
+					<!-- 筛选条件,必须多个条件同时满足。value里面可以通过逗号配置多个值 -->
+					<!-- <item key="site_id" value="50099835123123"></item> -->
+				</filter>
+			</task>
+		</firm>
+	</firms>
+</config>

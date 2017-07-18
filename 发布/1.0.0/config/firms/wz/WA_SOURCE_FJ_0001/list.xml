@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<column key="G020004" chn="厂商编码" fromfield="FIRM_ID" tofield="FIRM" defaultValue="0" formate="" enableNull="true"></column>
+		<column key="F040002" chn="文件名称" fromfield="SITE_ID" tofield="NAME" defaultValue="0" formate="toUpperCase(substring(row[SITE_ID],0,3))"></column>
+		<column key="F040003" chn="测试的" fromfield="DETECT_TIME" tofield="DETECT_TIME" defaultValue="0" formate="dicConvert(row[DETECT_TIME],virtual,200)"></column>
+	</columns>
+</config>
