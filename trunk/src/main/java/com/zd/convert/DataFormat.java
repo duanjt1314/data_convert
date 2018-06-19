@@ -24,6 +24,16 @@ public class DataFormat {
 	 * @return
 	 */
 	public static String Format(Map<String, List<ConvertDiction>> dicMap, DataRow row, String format) {
+		// 首先判断是否存在加号(+),如果存在就将几个数据加起来
+		if (format.contains("+")) {
+			String[] items = format.split("\\+");
+			String res = "";
+			for (int i = 0; i < items.length; i++) {
+				res += Format(dicMap, row, items[i]);
+			}
+			return res;
+		}
+
 		int start = format.indexOf("(");
 		int end = format.lastIndexOf(")");
 		// 截取方法名
@@ -71,7 +81,7 @@ public class DataFormat {
 			}
 			if (dicMap.containsKey(param[1])) {
 				for (ConvertDiction dict : dicMap.get(param[1])) {
-					if(dict.Val.equals(val)){
+					if (dict.Val.equals(val)) {
 						return dict.Export;
 					}
 				}
@@ -79,6 +89,11 @@ public class DataFormat {
 			} else {
 				return param[2];
 			}
+		case "macClear":// 将MAC地址中间的横线和冒号去掉
+			if (param.length != 1) {
+				throw new RuntimeException("自定义函数macClear必须有1个参数");
+			}
+			return val.replace("-", "").replaceAll(":", "");
 		default:
 			return val;
 		}
