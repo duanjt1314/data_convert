@@ -174,7 +174,11 @@ public class FileConvert {
 				Object data = null;
 				if (!StringUtil.IsNullOrEmpty(convertColumn.Formate)) {
 					// 格式化
-					data = DataFormat.Format(FirmInfo.ConvertDictions, map, convertColumn.Formate);
+					try {
+						data = DataFormat.Format(FirmInfo.ConvertDictions, map, convertColumn.Formate);
+					} catch (Exception ex) {
+						LogHelper.getLogger().error("格式化失败.格式化内容:" + convertColumn.Formate, ex);
+					}
 				} else {
 					if (map.containsKey(convertColumn.Fromfield)) {
 						data = map.get(convertColumn.Fromfield);

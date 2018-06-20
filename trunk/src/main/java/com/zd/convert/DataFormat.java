@@ -58,24 +58,24 @@ public class DataFormat {
 			val = row.get(columnName).toString();
 		}
 
-		switch (funName) {
+		switch (funName.toLowerCase()) {
 		case "substring":// 截取字符串,三个参数
 			if (param.length != 3) {
 				throw new RuntimeException("自定义函数substring必须有3个参数");
 			}
 			return val.substring(Integer.parseInt(param[1]), Integer.parseInt(param[2]));
 
-		case "toUpperCase":// 转大写
+		case "touppercase":// 转大写
 			if (param.length != 1) {
 				throw new RuntimeException("自定义函数substring必须有1个参数");
 			}
 			return val.toUpperCase();
-		case "toLowerCase":// 转小写
+		case "tolowercase":// 转小写
 			if (param.length != 1) {
 				throw new RuntimeException("自定义函数substring必须有1个参数");
 			}
 			return val.toLowerCase();
-		case "dicConvert":// 字典信息转换 dicConvert(row[ID_DICT_VTYPE],virtual,200)
+		case "dicconvert":// 字典信息转换 dicConvert(row[ID_DICT_VTYPE],virtual,200)
 			if (param.length != 3) {
 				throw new RuntimeException("自定义函数dicConvert必须有3个参数");
 			}
@@ -89,7 +89,7 @@ public class DataFormat {
 			} else {
 				return param[2];
 			}
-		case "macClear":// 将MAC地址中间的横线和冒号去掉
+		case "macclear":// 将MAC地址中间的横线和冒号去掉
 			if (param.length != 1) {
 				throw new RuntimeException("自定义函数macClear必须有1个参数");
 			}

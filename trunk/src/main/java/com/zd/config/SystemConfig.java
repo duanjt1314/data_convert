@@ -49,6 +49,10 @@ public class SystemConfig {
 	 * 转换日志目录
 	 */
 	public static String ConvertLogDir = Helper.GetAppDir() + File.separator + "convertLog";
+	/**
+	 * 数据库访问配置
+	 */
+	public static DataBase DataBase = null;
 
 	/**
 	 * 静态构造函数,加载xml配置
@@ -67,6 +71,9 @@ public class SystemConfig {
 			}
 			if (root.element("appSetting") != null) {
 				analysisAppSetting(root.element("appSetting"));
+			}
+			if (root.element("db") != null) {// 数据库配置
+				analysisDB(root.element("db"));
 			}
 
 			// 打印日志,显示读取结果
@@ -99,6 +106,20 @@ public class SystemConfig {
 		if (element.element("convertLogDir") != null) {
 			ConvertLogDir = element.element("convertLogDir").getText();
 		}
+	}
+
+	/**
+	 * 解析数据配置
+	 * @param element	将传入xml节点 config/db
+	 */
+	private static void analysisDB(Element element) {
+		DataBase = new DataBase();
+		DataBase.setDbType(element.element("dbType").getText());
+		DataBase.setIp(element.element("ip").getText());
+		DataBase.setPort(element.element("port").getText());
+		DataBase.setServiceName(element.element("serviceName").getText());
+		DataBase.setUserName(element.element("userName").getText());
+		DataBase.setPassword(element.element("password").getText());
 	}
 
 	/**
@@ -255,7 +276,7 @@ public class SystemConfig {
 						LogHelper.getLogger().error("节点:" + ele.getPath() + "缺少chn属性");
 					// fromfield
 					if (ele.attribute("fromfield") != null)
-						column.Fromfield = ele.attribute("fromfield").getText();
+						column.Fromfield = ele.attribute("fromfield").getText().toUpperCase();//转大写
 					else
 						LogHelper.getLogger().error("节点:" + ele.getPath() + "缺少fromfield属性");
 
