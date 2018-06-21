@@ -177,7 +177,8 @@ public class FileConvert {
 					try {
 						data = DataFormat.Format(FirmInfo.ConvertDictions, map, convertColumn.Formate);
 					} catch (Exception ex) {
-						LogHelper.getLogger().error("格式化失败.格式化内容:" + convertColumn.Formate, ex);
+						LogHelper.getLogger().error("格式化失败.格式化内容:" + convertColumn.Formate
+								+System.lineSeparator()+"源数据:"+StringUtil.GetJsonString(map), ex);
 					}
 				} else {
 					if (map.containsKey(convertColumn.Fromfield)) {

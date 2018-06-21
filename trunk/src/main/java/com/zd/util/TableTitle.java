@@ -14,7 +14,7 @@ public class TableTitle {
 	private static DataTable table;
 
 	static {
-		String sql = "select code,columns from config_datasource where type='TOPIC' AND code like '%145%'";
+		String sql = "select code,columns from config_datasource where type='TOPIC' ";
 		table = new DBAction(SystemConfig.DataBase).getData(sql);
 	}
 

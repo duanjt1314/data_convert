@@ -15,6 +15,7 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 
+import com.zd.util.LogHelper;
 import com.zd.util.TableTitle;
 
 /**
@@ -28,11 +29,6 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 	 * kafka消费者对象
 	 */
 	private static Consumer<String, String> consumer;
-
-	/**
-	 * Kafka Topic名称
-	 */
-	private String topic;
 
 	/**
 	 * 线程池
@@ -55,7 +51,7 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 	 * @param kafkaAction
 	 *            接收到消息后触发的方法
 	 */
-	public JavaKafkaConsumerHighAPI(String topic, int numThreads, String zookeeper, String groupId, KafkaAction kafkaAction) {
+	public JavaKafkaConsumerHighAPI(List<String> topics, int numThreads, String zookeeper, String groupId, KafkaAction kafkaAction) {
 		// 1. 创建Kafka连接器
 		Properties props = new Properties();
 		props.put("bootstrap.servers", zookeeper);// 服务器ip:端口号，集群用逗号分隔
@@ -66,11 +62,8 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
 		consumer = new KafkaConsumer<>(props);
-		List topics = new ArrayList<String>();
-		topics.add(topic);
 		consumer.subscribe(topics);
 
-		this.topic = topic;
 		this.kafkaAction = kafkaAction;
 	}
 
@@ -79,20 +72,31 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(100);
 			if (records.count() > 0) {
-				StringBuilder sb = new StringBuilder();
-				String topic = "";
+				Map<String, String> map = new HashMap<String, String>();
 				for (ConsumerRecord<String, String> record : records) {
-					topic = record.topic();
-					sb.append(record.value()+"\r\n");
+					String str = record.value() + "\r\n";
+					if (map.containsKey(record.topic())) {
+						str = map.get(record.topic()) + str + "\r\n";
+					}
+					map.put(record.topic(), str);
 				}
 
+				String ts = "";
+				for (String key : map.keySet()) {
+					ts += key + "|";
+				}
+				LogHelper.getLogger().debug("接收到数据,数据总条数：" + records.count() + ",topic:" + ts);
+
 				if (kafkaAction != null) {
-					String content = sb.toString();
-					String title = TableTitle.getTitle(topic);
-					if (!title.equals("")) {
-						content = title + "\r\n" + content;
+					for (String key : map.keySet()) {
+						String content = map.get(key);
+						String title = TableTitle.getTitle(key);
+						if (!title.equals("")) {
+							content = title + "\r\n" + content;
+						}
+						kafkaAction.RecevieMsg(content, key);
 					}
-					kafkaAction.RecevieMsg(content);
+
 				}
 
 			}
