@@ -8,7 +8,7 @@
 		<!--3上网服务场所编码-->
 		<column  key="3"  chn="" formate=""  tofield="NETBAR_WACODE" fromfield="netbar_wacode" defaultValue=""  ></column>
 		<!--4场所类型-->
-		<column  key="4"  chn="" formate=""  tofield="NetSite_Type" fromfield="substring(row[netbar_wacode],7,1)"  defaultValue="2"   ></column>
+		<column  key="4"  chn="" formate=""  tofield="NetSite_Type" fromfield="substring(row[netbar_wacode],7,8)"  defaultValue="2"   ></column>
 		<!--5身份证件类型-->
 		<column  key="5"  chn="" formate=""  tofield="CERTIFICATE_TYPE"      fromfield="identification_type" defaultValue="111"></column>
 		<!--6身份证件号码-->
