@@ -18,6 +18,8 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import com.zd.util.LogHelper;
 import com.zd.util.TableTitle;
 
+import cn.zdsoft.common.StringUtil;
+
 /**
  * 自定义简单Kafka消费者， 使用高级API
  * 
@@ -74,11 +76,15 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 			if (records.count() > 0) {
 				Map<String, String> map = new HashMap<String, String>();
 				for (ConsumerRecord<String, String> record : records) {
-					String str = record.value() + "\r\n";
-					if (map.containsKey(record.topic())) {
-						str = map.get(record.topic()) + str + "\r\n";
+					if (!StringUtil.IsNullOrEmpty(record.value())) {
+						String str = record.value().replace("\r\n", "") + "\r\n";// 先把源数据中可能存在的换行符删了
+						if (map.containsKey(record.topic())) {
+							str = map.get(record.topic()) + str;
+						}
+						map.put(record.topic(), str);
+					} else {
+						LogHelper.getLogger().warn("从消息队列拉取的消息为空，topic:" + record.topic());
 					}
-					map.put(record.topic(), str);
 				}
 
 				String ts = "";
