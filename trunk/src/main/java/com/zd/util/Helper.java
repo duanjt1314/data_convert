@@ -1,10 +1,23 @@
 package com.zd.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.Element;
+import org.dom4j.io.SAXReader;
+
 import cn.zdsoft.common.DateUtil;
+import cn.zdsoft.common.model.DataRow;
+import cn.zdsoft.common.model.DataTable;
 
 public class Helper {
 	private static int sequence5 = 1;
@@ -54,5 +67,54 @@ public class Helper {
 		} finally {
 			lock.unlock();
 		}
+	}
+
+	/**
+	 * 将xml读取为DataTable
+	 * @param content
+	 * @return
+	 * @throws DocumentException 
+	 */
+	public static DataTable Xml2Map(File xmlFile) throws DocumentException {
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(xmlFile);
+		Element root = document.getRootElement();
+		DataTable dataTable=new DataTable();
+		for (Object obj : root.elements()) {
+			DataRow row=new DataRow();
+			Element element=(Element)obj;
+			
+			for (Object object : element.elements()) {
+				Element ele_item=(Element)object;
+				row.put(ele_item.getName(), ele_item.getText());
+			}			
+			dataTable.add(row);
+		}
+		return dataTable;
+	}
+	
+	/**
+	 * 将xml读取为DataTable
+	 * @param content
+	 * @return
+	 * @throws DocumentException 
+	 * @throws UnsupportedEncodingException 
+	 */
+	public static DataTable Xml2Map(String xml) throws DocumentException, UnsupportedEncodingException {
+		SAXReader reader = new SAXReader();
+		Document document = reader.read(new ByteArrayInputStream(xml.getBytes("utf-8")));
+		Element root = document.getRootElement();
+		DataTable dataTable=new DataTable();
+		for (Object obj : root.elements()) {
+			DataRow row=new DataRow();
+			Element element=(Element)obj;
+			
+			for (Object object : element.elements()) {
+				Element ele_item=(Element)object;
+				row.put(ele_item.getName(), ele_item.getText());
+			}			
+			dataTable.add(row);
+		}
+		return dataTable;
 	}
 }

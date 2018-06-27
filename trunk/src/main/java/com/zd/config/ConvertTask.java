@@ -1,5 +1,6 @@
 package com.zd.config;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,7 +37,7 @@ public class ConvertTask {
 	/**
 	 * 转换结果方式:json、xml、zbf(制表符)
 	 */
-	public String DataType;	
+	public String DataType;
 	/**
 	 * 筛选条件
 	 */
@@ -49,15 +50,22 @@ public class ConvertTask {
 	/**
 	 * 是否按区域上报
 	 */
-	public boolean RegionReport=false;
+	public boolean RegionReport = false;
 	/**
 	 * 默认区域编码，需要配合RegionReport一起使用
 	 */
-	public String DefaultRegion="";
+	public String DefaultRegion = "";
 	/**
 	 * 压缩文件名称
 	 */
-	public String ZipName="";
+	public String ZipName = "";
+	/**
+	 * 需要解析的文件类型，即后缀名
+	 */
+	public String FileType = "";
+	/**
+	 * 需要解析的文件名内容。只要文件名里面包含了该内容就会被解析
+	 */
+	public List<String> SearchPatterns=new ArrayList<String>();
 
-	
 }

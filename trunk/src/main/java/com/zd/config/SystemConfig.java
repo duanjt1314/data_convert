@@ -34,6 +34,11 @@ public class SystemConfig {
 	 */
 	private static String configPath = PathUtil.Combine(Helper.GetAppDir(), "config", "config.xml");
 	/**
+	 * 文件来源目录
+	 */
+	public static String SourceDir = Helper.GetAppDir() + File.separator + "log";
+
+	/**
 	 * 文件输出目录
 	 */
 	public static String OutputDir = Helper.GetAppDir() + File.separator + "output";
@@ -94,6 +99,9 @@ public class SystemConfig {
 	 *            将传入xml节点 config/appSetting
 	 */
 	private static void analysisAppSetting(Element element) {
+		if (element.element("sourceDir") != null) {
+			SourceDir = element.element("sourceDir").getText();
+		}
 		if (element.element("outputDir") != null) {
 			OutputDir = element.element("outputDir").getText();
 		}
@@ -132,10 +140,12 @@ public class SystemConfig {
 	private static void analysisKafka(Element element) throws Exception {
 		// 检查kafka配置
 		if (element == null) {
-			throw new Exception("节点config/kafka不存在,停止解析");
+			LogHelper.getLogger().warn("没有配置config/kafka节点，将不会拉取kafka消息");
+			return;
 		}
 		if (element.element("url") == null) {
-			throw new Exception("节点config/kafka/url不存在,停止解析");
+			LogHelper.getLogger().warn("没有配置config/kafka/url节点，将不会拉取kafka消息");
+			return;
 		}
 		// 读取kafka配置
 		KafkaUrl = element.element("url").getText();
@@ -187,10 +197,23 @@ public class SystemConfig {
 		}
 		task.TaskId = element.attribute("id").getText();
 		// topic属性
-		if (element.attribute("topic") == null) {
-			throw new Exception("节点config/firms/firm/task的属性topic不存在,停止解析");
+		if (element.attribute("topic") != null) {
+			task.Topic = element.attribute("topic").getText();
 		}
-		task.Topic = element.attribute("topic").getText();
+		// fileType属性
+		if (element.attribute("fileType") != null) {
+			task.FileType = element.attribute("fileType").getText();
+			if (task.FileType.indexOf('.') != 0) {
+				task.FileType = "." + task.FileType;//让格式为：.gz
+			}
+		}
+		// 需要解析的文件类型
+		if (element.element("searchPattern") != null) {
+			List spList = element.element("searchPattern").elements("item");
+			for (Object object : spList) {
+				task.SearchPatterns.add(((Element) object).getText());
+			}
+		}
 		// indexPath
 		if (element.element("indexPath") != null) {
 			task.IndexPath = element.element("indexPath").getText();
@@ -276,7 +299,7 @@ public class SystemConfig {
 						LogHelper.getLogger().error("节点:" + ele.getPath() + "缺少chn属性");
 					// fromfield
 					if (ele.attribute("fromfield") != null)
-						column.Fromfield = ele.attribute("fromfield").getText().toUpperCase();//转大写
+						column.Fromfield = ele.attribute("fromfield").getText().toUpperCase();// 转大写
 					else
 						LogHelper.getLogger().error("节点:" + ele.getPath() + "缺少fromfield属性");
 

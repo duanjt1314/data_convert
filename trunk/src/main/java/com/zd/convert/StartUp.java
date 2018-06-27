@@ -1,5 +1,6 @@
 package com.zd.convert;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -7,9 +8,12 @@ import java.util.UUID;
 import com.zd.config.ConvertFirm;
 import com.zd.config.ConvertTask;
 import com.zd.config.SystemConfig;
+import com.zd.kafka.FileScan;
 import com.zd.kafka.JavaKafkaConsumerHighAPI;
 import com.zd.kafka.KafkaAction;
 import com.zd.util.LogHelper;
+
+import cn.zdsoft.common.StringUtil;
 
 /**
  * 具体逻辑处理程序
@@ -19,48 +23,65 @@ import com.zd.util.LogHelper;
  */
 public class StartUp extends Thread {
 	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
+	private FileScan fileScan=new FileScan();
 
 	@Override
 	public void run() {
+		KafkaListen();		
+		new Thread(fileScan).start();
+	}
+
+	/**
+	 * Kafka消息队列监听
+	 */
+	private void KafkaListen() {
 		try {
-			// 循环并获取需要消费的topic集合
-			List<String> topics = new ArrayList<String>();
-			for (ConvertFirm firm : SystemConfig.ConvertFirms) {
-				for (ConvertTask task : firm.Tasks) {
-					topics.add(task.Topic);
-				}
-			}
 
-			javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "zdkafka", new KafkaAction() {
+			if (!StringUtil.IsNullOrEmpty(SystemConfig.KafkaUrl)) {
 
-				@Override
-				public void RecevieMsg(String msg, String topic) {
-					try {
-						String convertId = UUID.randomUUID().toString();
-						LogHelper.getLogger()
-								.debug("接收到数据:" + System.lineSeparator()//
-										+ "转换唯一编码:" + convertId + System.lineSeparator()//
-										+ msg + System.lineSeparator()//
-						);
-						
-						for (ConvertFirm firm : SystemConfig.ConvertFirms) {
-							for (ConvertTask task : firm.Tasks) {
-								if(task.Topic.equals(topic)){
-									new FileConvert(task, firm, convertId).DealFile(msg);
-								}
-							}
-						}
-						
-					} catch (Exception e) {
-						LogHelper.getLogger().error("接收数据处理,未识别的异常", e);
+				// 循环并获取需要消费的topic集合
+				List<String> topics = new ArrayList<String>();
+				for (ConvertFirm firm : SystemConfig.ConvertFirms) {
+					for (ConvertTask task : firm.Tasks) {
+						if (!StringUtil.IsNullOrEmpty(task.Topic))
+							topics.add(task.Topic);
 					}
 				}
-			});
-			new Thread(javaKafkaConsumer).start();
-			LogHelper.getLogger().info(String.format("KakfaURL:%s,Topic:%s,监听成功", SystemConfig.KafkaUrl, topics));
+
+				javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "zdkafka", new KafkaAction() {
+
+					@Override
+					public void RecevieMsg(String msg, String topic) {
+						try {
+							String convertId = UUID.randomUUID().toString();
+							LogHelper.getLogger()
+									.debug("接收到数据:" + System.lineSeparator()//
+											+ "转换唯一编码:" + convertId + System.lineSeparator()//
+											+ msg + System.lineSeparator()//
+							);
+
+							for (ConvertFirm firm : SystemConfig.ConvertFirms) {
+								for (ConvertTask task : firm.Tasks) {
+									if (task.Topic.equals(topic)) {
+										new FileConvert(task, firm, convertId).DealFile(msg);
+									}
+								}
+							}
+
+						} catch (Exception e) {
+							LogHelper.getLogger().error("接收数据处理,未识别的异常", e);
+						}
+					}
+				});
+				new Thread(javaKafkaConsumer).start();
+				LogHelper.getLogger().info(String.format("KakfaURL:%s,Topic:%s,监听成功", SystemConfig.KafkaUrl, topics));
+
+			} else {
+				LogHelper.getLogger().warn("kafka的url地址配置为空，不进行kafka的监听。");
+			}
 
 		} catch (Exception e) {
-			LogHelper.getLogger().error("线程执行错误", e);
+			LogHelper.getLogger().error("kafka监听异常", e);
 		}
 	}
 
@@ -70,6 +91,7 @@ public class StartUp extends Thread {
 
 	public void Stop() {
 		javaKafkaConsumer.shutdown();
+		fileScan.stop();
 		LogHelper.getLogger().info("程序停止成功");
 	}
 }

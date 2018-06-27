@@ -52,7 +52,7 @@ public class FileConvert {
 		FirmInfo = firmInfo;
 		ConvertId = convertId;
 	}
-
+	
 	/**
 	 * 文件处理
 	 * 
@@ -66,13 +66,16 @@ public class FileConvert {
 			LogHelper.getLogger().error(GetLogPrefix() + "从消息队列拉取的消息转换后集合为空,content:" + content);
 			return;
 		}
-
+		DealFile(dataTable);
+	}
+	
+	public void DealFile(DataTable dataTable) {
 		// 确保目录存在
 		CreateDir();
 		// Filter筛选数据
 		DataTable list = FilterData(dataTable);
 		if (list.size() == 0) {
-			LogHelper.getLogger().info(GetLogPrefix() + "数据清理后为空，不进行文件处理。原数据是:" + System.lineSeparator() + content);
+			LogHelper.getLogger().info(GetLogPrefix() + "数据清理后为空，不进行文件处理。");
 			return;
 		}
 
@@ -95,20 +98,20 @@ public class FileConvert {
 
 				// 循环转换
 				for (String key : mapList.keySet()) {
-					WriteFile(DealFile(mapList.get(key)), key);
+					WriteFile(ConvertData(mapList.get(key)), key);
 				}
 
 			} else {
 				// 无法分组,但是可以传入默认区域编码
-				WriteFile(DealFile(list), ConvertTask.DefaultRegion);
+				WriteFile(ConvertData(list), ConvertTask.DefaultRegion);
 			}
 
 		} else {
 			// 直接上报
-			WriteFile(DealFile(list), "");
+			WriteFile(ConvertData(list), "");
 		}
 
-		LogHelper.getLogger().debug(GetLogPrefix() + "转换完成。源数据:" + System.lineSeparator() + content);
+		LogHelper.getLogger().debug(GetLogPrefix() + "转换完成。");
 	}
 
 	/**
@@ -166,7 +169,7 @@ public class FileConvert {
 	 *            原始键值对集合
 	 * @return 目标键值对集合
 	 */
-	private DataTable DealFile(DataTable list) {
+	private DataTable ConvertData(DataTable list) {
 		DataTable result = new DataTable();
 		for (DataRow map : list) {
 			DataRow row = new DataRow();

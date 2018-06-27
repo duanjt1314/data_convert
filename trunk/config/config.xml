@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-	<!-- kafka消息队列相关配置 -->
+	<!-- kafka消息队列相关配置，没有配置kafka的Url地址表示不从Kafka拉取数据 -->
 	<kafka>
 		<!-- ,192.168.23.77:2181,192.168.23.78:2181 -->
-		<url>192.168.23.76:9092,192.168.23.77:9092,192.168.23.78:9092</url>
+		<!-- <url>192.168.23.76:9092,192.168.23.77:9092,192.168.23.78:9092</url> -->
 	</kafka>
 
 	<appSetting>
+		<!-- 来源目录 -->
+		<sourceDir>F:/switch100/log</sourceDir>
 		<!-- 转出目录,将会根据厂商创建目录 -->
 		<outputDir>F:/switch100/output</outputDir>
 		<!-- 错误目录,将会根据厂商创建目录,转换错误之后将数据写入记事本 -->
@@ -31,8 +33,15 @@
 	<firms>
 		<!-- id:厂商编码 name:厂商名称 convertDic:厂商字典格式化地址,可为空 -->
 		<firm id="wz" name="烽火" convertDic="/config/firms/wz/convertDic.xml">		
-			<!-- 终端特征 -->
-			<task id="0001" topic="bocai-logs-terminallog-145">
+			<!-- 
+			终端特征 ，
+			存在FileType就表示从文件读取
+			-->
+			<task id="0001" topic="bocai-logs-terminallog-145" fileType="gz">				
+				<!-- 配置从文件中读取的匹配模式 -->
+				<searchPattern>
+					<item>*WifiTerminalInfoLog*</item>
+				</searchPattern>
 				<!-- 索引文件配置 -->
 				<indexPath>/config/firms/wz/WA_SOURCE_FJ_0001/WA_SOURCE_FJ_0001.xml</indexPath>
 				<indexName>GAB_ZIP_INDEX.xml</indexName>
