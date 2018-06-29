@@ -108,7 +108,7 @@ public class FileScan implements Runnable {
 			if (con) {
 				DataTable dt = ReadFile(file);
 				String convertId=UUID.randomUUID().toString();
-				new FileConvert(task, firm, convertId).DealFile(dt);
+				new FileConvert(task, firm, convertId).DealFile(dt,file.getName());
 				return 1;
 			} else {
 				return 2;

@@ -2,8 +2,7 @@
 <config>
 	<!-- kafka消息队列相关配置，没有配置kafka的Url地址表示不从Kafka拉取数据 -->
 	<kafka>
-		<!-- ,192.168.23.77:2181,192.168.23.78:2181 -->
-		<!-- <url>192.168.23.76:9092,192.168.23.77:9092,192.168.23.78:9092</url> -->
+		<url>192.168.23.76:9092,192.168.23.77:9092,192.168.23.78:9092</url>
 	</kafka>
 
 	<appSetting>
@@ -34,7 +33,7 @@
 		<!-- id:厂商编码 name:厂商名称 convertDic:厂商字典格式化地址,可为空 -->
 		<firm id="wz" name="烽火" convertDic="/config/firms/wz/convertDic.xml">		
 			<!-- 
-			终端特征 ，
+			终端特征 ，bocai-logs-terminallog-145
 			存在FileType就表示从文件读取
 			-->
 			<task id="0001" topic="bocai-logs-terminallog-145" fileType="gz">				
@@ -54,9 +53,14 @@
 				<dataType>zbf</dataType>
 				<!-- 是否按区域上报,默认为false。default表示不能按区域上报的数据默认区域编码 -->
 				<regionReport default="500000">0</regionReport>
+				
+				<!-- 数据保障配置,转换成功后，这三列都将被删除 -->
+				<siteIdName>t_site_id</siteIdName>
+				<deviceIdName>t_device_id</deviceIdName>
+				<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
 			</task>
-			<!-- 上网日志 -->
-			<task id="0002" topic="bocai-logs-netlog-145">
+			<!-- 上网日志 bocai-logs-netlog-145 -->
+			<task id="0002" topic="">
 				<!-- 索引文件配置 -->
 				<indexPath>/config/firms/wz/WA_SOURCE_FJ_0002/WA_SOURCE_FJ_0002.xml</indexPath>
 				<indexName>GAB_ZIP_INDEX.xml</indexName>

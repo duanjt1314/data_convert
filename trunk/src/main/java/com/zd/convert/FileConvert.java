@@ -3,12 +3,16 @@ package com.zd.convert;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import com.zd.config.ConvertColumn;
 import com.zd.config.ConvertFirm;
 import com.zd.config.ConvertTask;
 import com.zd.config.SystemConfig;
+import com.zd.kafka.JavaKafkaProducer;
 import com.zd.util.Helper;
+import com.zd.util.Kafka;
 import com.zd.util.LogHelper;
 
 import cn.zdsoft.common.*;
@@ -35,6 +39,10 @@ public class FileConvert {
 	 * 定义唯一转换编码，方便记录并查看日志
 	 */
 	private String ConvertId;
+	/**
+	 * 源文件名，用于数据保障
+	 */
+	private String SourceFileName;
 
 	/**
 	 * 实例化转换线程程序
@@ -52,7 +60,7 @@ public class FileConvert {
 		FirmInfo = firmInfo;
 		ConvertId = convertId;
 	}
-	
+
 	/**
 	 * 文件处理
 	 * 
@@ -66,10 +74,12 @@ public class FileConvert {
 			LogHelper.getLogger().error(GetLogPrefix() + "从消息队列拉取的消息转换后集合为空,content:" + content);
 			return;
 		}
-		DealFile(dataTable);
+		DealFile(dataTable, "");
 	}
-	
-	public void DealFile(DataTable dataTable) {
+
+	public void DealFile(DataTable dataTable, String fileName) {
+		this.SourceFileName = fileName;
+
 		// 确保目录存在
 		CreateDir();
 		// Filter筛选数据
@@ -227,7 +237,7 @@ public class FileConvert {
 				LogHelper.getLogger().error(GetLogPrefix() + "写入索引文件错误，任务:" + ConvertTask.TaskId + " 厂商:" + FirmInfo + ".错误文件存放到:" + fileName);
 				return;
 			}
-			res = WriteDataFile(list, PathUtil.Combine(path, dataFileName));
+			res = WriteDataFile(list.copy(), PathUtil.Combine(path, dataFileName));
 			if (!res) {
 				String fileName = WriteErrorFile(list);
 				LogHelper.getLogger().error(GetLogPrefix() + "写入数据文件错误，任务:" + ConvertTask.TaskId + " 厂商:" + FirmInfo + ".错误文件存放到:" + fileName);
@@ -238,6 +248,9 @@ public class FileConvert {
 			ZipUtil.Zip(path, targetPath, zipName, false);
 			LogHelper.getLogger().info(String.format(GetLogPrefix() + "文件转换成功，转换后的路径是:%s", //
 					PathUtil.Combine(targetPath, zipName)));
+
+			// 数据质量
+			WriteTransLog(list, zipName);
 		} catch (Exception e) {
 			LogHelper.getLogger().error(GetLogPrefix() + "写入文件出现异常，参数:" + StringUtil.GetJsonString(list), e);
 		} finally {
@@ -262,6 +275,20 @@ public class FileConvert {
 	 */
 	private boolean WriteDataFile(DataTable list, String url) {
 		try {
+			// 数据保障包含的列要删除
+			for (DataRow dataRow : list) {
+				if (!StringUtil.IsNullOrEmpty(ConvertTask.SiteIdName)) {
+					dataRow.remove(ConvertTask.SiteIdName);
+				}
+				if (!StringUtil.IsNullOrEmpty(ConvertTask.DeviceIdName)) {
+					dataRow.remove(ConvertTask.DeviceIdName);
+				}
+				if (!StringUtil.IsNullOrEmpty(ConvertTask.SourceSiteIdName)) {
+					dataRow.remove(ConvertTask.SourceSiteIdName);
+				}
+			}
+
+			// 写入文件
 			String content = StringUtil.Map2String(list, false);
 			FileUtil.WriteAllString(url, content);
 			return true;
@@ -307,6 +334,58 @@ public class FileConvert {
 		String fileName = PathUtil.Combine(path, UUID.randomUUID().toString() + ".log");
 		FileUtil.WriteAllString(fileName, StringUtil.GetJsonString(list));
 		return fileName;
+	}
+
+	/**
+	 * 写入数据保障，推送到kafka
+	 * @param zipName
+	 */
+	private void WriteTransLog(DataTable data, String zipName) {
+		try {
+			if (!StringUtil.IsNullOrEmpty(ConvertTask.SiteIdName)//
+					&& !StringUtil.IsNullOrEmpty(ConvertTask.DeviceIdName)//
+					&& !StringUtil.IsNullOrEmpty(ConvertTask.SourceSiteIdName)) {
+				String key = "";
+				Map<String, Integer> map = new HashMap<String, Integer>();
+				for (DataRow dataRow : data) {
+					key = dataRow.get(ConvertTask.SiteIdName) + "&"//
+							+ dataRow.get(ConvertTask.DeviceIdName) + "&"//
+							+ dataRow.get(ConvertTask.SourceSiteIdName);
+					int count = 1;
+					if (map.containsKey(key)) {
+						count = map.get(key) + 1;
+					}
+					map.put(key, count);
+				}
+
+				// 推送到kafka
+				for (String mk : map.keySet()) {
+					String siteId=mk.split("&")[0];
+					String deviceId=mk.split("&")[1];
+					String sourceSiteId=mk.split("&")[2];
+					
+					List<String> dataArr = new ArrayList<String>();
+					long tran_date = new Date().getTime() / 1000;
+					dataArr.add(CheckSumId.GetId(tran_date, siteId,deviceId,sourceSiteId));
+					dataArr.add(siteId);
+					dataArr.add(deviceId);
+					dataArr.add(FirmInfo.FirmId);
+					dataArr.add(tran_date+"");
+					dataArr.add(ConvertTask.TaskId);
+					dataArr.add(SourceFileName);
+					dataArr.add(zipName);
+					dataArr.add(map.get(mk)+"");//数量
+					dataArr.add(sourceSiteId);
+					
+					Kafka.SendTransKafka(String.join("\t", dataArr));
+				}
+			}
+		} catch (Exception e) {
+			String msg = "写入数据保障错误,data:" + StringUtil.GetJsonString(data)//
+					+ "\r\nzipName:" + zipName//
+					+ "\r\nTaskId:" + ConvertTask.TaskId;
+			LogHelper.getLogger().error(msg, e);
+		}
 	}
 
 	/**

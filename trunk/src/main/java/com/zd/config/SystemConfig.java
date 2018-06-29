@@ -58,6 +58,7 @@ public class SystemConfig {
 	 * 数据库访问配置
 	 */
 	public static DataBase DataBase = null;
+	public static String TransTopic = "bocai-logs-translog";
 
 	/**
 	 * 静态构造函数,加载xml配置
@@ -204,7 +205,7 @@ public class SystemConfig {
 		if (element.attribute("fileType") != null) {
 			task.FileType = element.attribute("fileType").getText();
 			if (task.FileType.indexOf('.') != 0) {
-				task.FileType = "." + task.FileType;//让格式为：.gz
+				task.FileType = "." + task.FileType;// 让格式为：.gz
 			}
 		}
 		// 需要解析的文件类型
@@ -257,6 +258,10 @@ public class SystemConfig {
 		if (element.element("zipName") != null) {
 			task.ZipName = element.element("zipName").getText();
 		}
+		task.SiteIdName = XmlUtil.GetXmlElement(element, "siteIdName", "").toUpperCase();
+		task.DeviceIdName = XmlUtil.GetXmlElement(element, "deviceIdName", "").toUpperCase();
+		task.SourceSiteIdName = XmlUtil.GetXmlElement(element, "sourceSiteIdName", "").toUpperCase();
+
 		// 解析转换列的集合
 		File dataFile = new File(task.DataPath);
 		if (!dataFile.exists()) {

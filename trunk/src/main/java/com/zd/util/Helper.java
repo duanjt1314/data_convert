@@ -15,6 +15,9 @@ import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
+import com.zd.config.SystemConfig;
+import com.zd.kafka.JavaKafkaProducer;
+
 import cn.zdsoft.common.DateUtil;
 import cn.zdsoft.common.model.DataRow;
 import cn.zdsoft.common.model.DataTable;
@@ -22,7 +25,7 @@ import cn.zdsoft.common.model.DataTable;
 public class Helper {
 	private static int sequence5 = 1;
 	private static Lock lock = new ReentrantLock();// 定义锁对象
-
+	
 	/**
 	 * 获取当前程序所运行jar所在目录
 	 * 
@@ -79,20 +82,20 @@ public class Helper {
 		SAXReader reader = new SAXReader();
 		Document document = reader.read(xmlFile);
 		Element root = document.getRootElement();
-		DataTable dataTable=new DataTable();
+		DataTable dataTable = new DataTable();
 		for (Object obj : root.elements()) {
-			DataRow row=new DataRow();
-			Element element=(Element)obj;
-			
+			DataRow row = new DataRow();
+			Element element = (Element) obj;
+
 			for (Object object : element.elements()) {
-				Element ele_item=(Element)object;
+				Element ele_item = (Element) object;
 				row.put(ele_item.getName(), ele_item.getText());
-			}			
+			}
 			dataTable.add(row);
 		}
 		return dataTable;
 	}
-	
+
 	/**
 	 * 将xml读取为DataTable
 	 * @param content
@@ -104,17 +107,18 @@ public class Helper {
 		SAXReader reader = new SAXReader();
 		Document document = reader.read(new ByteArrayInputStream(xml.getBytes("utf-8")));
 		Element root = document.getRootElement();
-		DataTable dataTable=new DataTable();
+		DataTable dataTable = new DataTable();
 		for (Object obj : root.elements()) {
-			DataRow row=new DataRow();
-			Element element=(Element)obj;
-			
+			DataRow row = new DataRow();
+			Element element = (Element) obj;
+
 			for (Object object : element.elements()) {
-				Element ele_item=(Element)object;
+				Element ele_item = (Element) object;
 				row.put(ele_item.getName(), ele_item.getText());
-			}			
+			}
 			dataTable.add(row);
 		}
 		return dataTable;
 	}
+
 }

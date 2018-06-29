@@ -23,11 +23,11 @@ import cn.zdsoft.common.StringUtil;
  */
 public class StartUp extends Thread {
 	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
-	private FileScan fileScan=new FileScan();
+	private FileScan fileScan = new FileScan();
 
 	@Override
 	public void run() {
-		KafkaListen();		
+		KafkaListen();
 		new Thread(fileScan).start();
 	}
 
@@ -48,34 +48,38 @@ public class StartUp extends Thread {
 					}
 				}
 
-				javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "zdkafka", new KafkaAction() {
+				if (topics.size() > 0) {
 
-					@Override
-					public void RecevieMsg(String msg, String topic) {
-						try {
-							String convertId = UUID.randomUUID().toString();
-							LogHelper.getLogger()
-									.debug("接收到数据:" + System.lineSeparator()//
-											+ "转换唯一编码:" + convertId + System.lineSeparator()//
-											+ msg + System.lineSeparator()//
-							);
+					javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "zdkafka", new KafkaAction() {
 
-							for (ConvertFirm firm : SystemConfig.ConvertFirms) {
-								for (ConvertTask task : firm.Tasks) {
-									if (task.Topic.equals(topic)) {
-										new FileConvert(task, firm, convertId).DealFile(msg);
+						@Override
+						public void RecevieMsg(String msg, String topic) {
+							try {
+								String convertId = UUID.randomUUID().toString();
+								LogHelper.getLogger()
+										.debug("接收到数据:" + System.lineSeparator()//
+												+ "转换唯一编码:" + convertId + System.lineSeparator()//
+												+ msg + System.lineSeparator()//
+								);
+
+								for (ConvertFirm firm : SystemConfig.ConvertFirms) {
+									for (ConvertTask task : firm.Tasks) {
+										if (task.Topic.equals(topic)) {
+											new FileConvert(task, firm, convertId).DealFile(msg);
+										}
 									}
 								}
+
+							} catch (Exception e) {
+								LogHelper.getLogger().error("接收数据处理,未识别的异常", e);
 							}
-
-						} catch (Exception e) {
-							LogHelper.getLogger().error("接收数据处理,未识别的异常", e);
 						}
-					}
-				});
-				new Thread(javaKafkaConsumer).start();
-				LogHelper.getLogger().info(String.format("KakfaURL:%s,Topic:%s,监听成功", SystemConfig.KafkaUrl, topics));
-
+					});
+					new Thread(javaKafkaConsumer).start();
+					LogHelper.getLogger().info(String.format("KakfaURL:%s,Topic:%s,监听成功", SystemConfig.KafkaUrl, topics));
+				} else {
+					LogHelper.getLogger().warn("kafka url is ok,but topics is null,so not listen");
+				}
 			} else {
 				LogHelper.getLogger().warn("kafka的url地址配置为空，不进行kafka的监听。");
 			}

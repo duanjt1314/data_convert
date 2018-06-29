@@ -67,5 +67,10 @@ public class ConvertTask {
 	 * 需要解析的文件名内容。只要文件名里面包含了该内容就会被解析
 	 */
 	public List<String> SearchPatterns=new ArrayList<String>();
+	
+	//下面是用于数据保障的三列配置
+	public String SiteIdName="";
+	public String DeviceIdName="";
+	public String SourceSiteIdName="";
 
 }
