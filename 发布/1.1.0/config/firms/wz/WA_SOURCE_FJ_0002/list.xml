@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<column key="1" chn="会话ID" formate="" tofield="SESSIONID"  fromfield="sessionid" defaultValue=""  ></column>		
+		<column key="2" chn="上网服务场所编码" formate="" tofield="NETSERVERPORT_WACODE"   fromfield="netbar_wacode" defaultValue=""  ></column>		
+		<column key="3" chn="网络应用服务类型" formate="" tofield="NETWORK_APP" fromfield="network_app" defaultValue=""  ></column>		
+		<column key="4" chn="场所内网IP地址" formate="" tofield="IP_ADDRESS" fromfield="ip_address" defaultValue=""  ></column>
+		<!--5场所内网端口号-->
+		<column key="5" chn="场所内网端口号" formate="" tofield="PORT" fromfield="port" defaultValue=""  ></column>
+		<!--6源外网IPv4地址-->
+		<column key="6" chn="源外网IPv4地址" formate="" tofield="SRC_IP" fromfield="src_ip" defaultValue=""  ></column>
+		<!--7源外网IPv6地址-->
+		<column key="7" chn="" formate="" tofield="SRC_IPV6" fromfield="src_ipv6" defaultValue=""  ></column>
+		<!--8源外网IPv4起始端口号-->
+		<column key="8" chn="" formate="" tofield="SRC_PORT_START" fromfield="src_port_start" defaultValue=""  ></column>
+		<!--9源外网IPv4结束端口号-->
+		<column key="9" chn="" formate="" tofield="SRC_PORT_END" fromfield="src_port_end" defaultValue=""  ></column>
+		<!--10源外网IPv6起始端口号-->
+		<column key="10" chn="" formate="" tofield="SRC_PORT_START_V6" fromfield="src_port_start_v6" defaultValue=""  ></column>
+		<!--11源外网IPv6结束端口号-->
+		<column key="11" chn="" formate="" tofield="SRC_PORT_END_V6" fromfield="src_port_end_v6" defaultValue=""  ></column>
+		<!--12目的公网IPv4地址-->
+		<column key="12" chn="" formate="" tofield="DST_IP" fromfield="dst_ip" defaultValue=""  ></column>
+		<!--13目的公网IPv6地址-->
+		<column key="13" chn="" formate="" tofield="DST_IPV6" fromfield="dst_ipv6" defaultValue=""  ></column>
+		<!--14目的公网IPv4端口号-->
+		<column key="14" chn="" formate="" tofield="DST_PORT" fromfield="dst_port" defaultValue=""  ></column>
+		<!--15目的公网IPv6端口号-->
+		<column key="15" chn="" formate="" tofield="DST_PORT_V6" fromfield="dst_port_v6" defaultValue=""  ></column>
+		<!--16终端MAC地址-->
+		<column key="16" chn="" formate="" tofield="MAC" fromfield="mac" defaultValue=""  ></column>
+		<!--17AP设备编号-->
+		<column key="17" chn="" formate="" tofield="COLLECTION_EQUIPMENT_ID" fromfield="equipment_id" defaultValue=""  ></column>
+		<!--18AP设备MAC地址-->
+		<column key="18" chn="" formate="" tofield="AP_MAC" fromfield="equipment _mac" defaultValue=""  ></column>
+		<!--19移动AP经度-->
+		<column key="19" chn="" formate="" tofield="LONGITUDE" fromfield="equipment_longitude" defaultValue=""  ></column>
+		<!--20移动AP纬度-->
+		<column key="20" chn="" formate="" tofield="LATITUDE"       fromfield="equipment_latitude" defaultValue=""  ></column>
+		<!--21日志记录时间-->
+		<column key="21" chn="" formate="" tofield="CAPTURE_TIME"       fromfield="capture_time" defaultValue=""  ></column>
+		<!--22认证类型-->
+		<column key="22" chn="" formate="" tofield="AUTH_TYPE"       fromfield="auth_type" defaultValue="123456"  ></column>
+		<!--23认证帐号-->
+		<column key="23" chn="" formate="" tofield="AUTH_ACCOUNT"       fromfield="auth_account" defaultValue="123456"  ></column>
+		<!--24身份类型-->
+		<column key="24" chn="" formate="" tofield="IDENTIFICATION_TYPE"       fromfield="certificate_type" defaultValue=""  ></column>
+		<!--25身份内容--> 
+		<column key="25" chn="" formate="" tofield="CERTIFICATE_CODE"       fromfield="certificate_code" defaultValue=""  ></column>
+		<!--26终端手机号码--> 
+		<column key="26" chn="" formate="" tofield="PICKUP_PHONE"       fromfield="auth_account" defaultValue=""  ></column>
+		<!--27终端IMSI码--> 
+		<column key="27" chn="" formate="" tofield="IMSI"       fromfield="" defaultValue=""  ></column>
+		<!--28终端IMEI码--> 
+		<column key="28" chn="" formate="" tofield="IMEI_ESN_MEID"       fromfield="" defaultValue=""  ></column>
+		<!--29终端系统--> 
+		<column key="29" chn="" formate="" tofield="OS_NAME"       fromfield="" defaultValue=""  ></column>
+		<!--30终端型号--> 
+		<column key="30" chn="" formate="" tofield="MODEL"       fromfield="" defaultValue=""  ></column>
+		<!--31浏览器信息--> 
+		<column key="31" chn="" formate="" tofield="BROWSE_VERSION"       fromfield="" defaultValue=""  ></column>
+		
+		<!-- 
+		<column key="F040003" chn="测试的" fromfield="DETECT_TIME" tofield="DETECT_TIME" defaultValue="0" formate="dicConvert(row[DETECT_TIME],virtual,200)"></column>
+		-->
+	</columns>
+</config>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATA>
+	<ITEM key="I010032" val="" rmk="列分隔符（缺少值时默认为制表符\t）" />
+	<ITEM key="I010033" val="" rmk="行分隔符（缺少值时默认为换行符\n）" />
+	<ITEM key="A010004" val="WA_SOURCE_FJ_1002" rmk="数据集代码" />
+	<ITEM key="B050016" val="146" rmk="数据来源" />
+	<ITEM key="G020013" val="765941742" rmk="网安专用产品厂家组织机构代码" />
+	<ITEM key="F010008" val="511100" rmk="数据采集地" />
+	<ITEM key="I010038" val="1" rmk="数据起始行，可选项，不填写默认为第１行" />
+	<ITEM key="I010039" val="UTF-8" rmk="可选项，默认为UTF-８，BCP文件编码格式（采用不带格式的编码方式，如：UTF-８无BOM）" />
+	<!-- 下面指定表示有两个文件使用这个格式 -->
+	<DATASET name="WA_COMMON_010014" rmk="BCP数据文件信息">
+		<DATA>
+			<ITEM key="H040003" val="./" rmk="文件路径" />
+			<ITEM key="H010020" val="@@filename" rmk="文件名" />
+			<ITEM key="I010034" val="@@datacount" rmk="记录行数" />
+		</DATA>
+	</DATASET>
+	<!-- 描述BCP文件中的数据列顺序 -->
+	<DATASET name="WA_COMMON_010015" rmk="BCP文件数据结构">
+		<DATA>
+			<ITEM key="F030011" chn="热点MAC地址" eng="AP_MAC" rmk=""/>
+			<ITEM key="F030001" chn="热点SSID" eng="AP_SSID" rmk=""/>
+			<ITEM key="F030022" chn="热点频道" eng="AP_CHANNEL" rmk=""/>
+			<ITEM key="B040025" chn="热点加密类型" eng="ENCRYPT_ALGORITHM_TYPE" rmk=""/>
+			<ITEM key="H010014" chn="采集时间" eng="CAPTURE_TIME" rmk=""/>
+			<ITEM key="F030023" chn="热点场强" eng="AP_FIELD STRENGTH" rmk=""/>
+			<ITEM key="I070001" chn="X坐标" eng="X_COORDINATE" rmk=""/>
+			<ITEM key="I070002" chn="Y坐标" eng="Y_COORDINATE" rmk=""/>
+			<ITEM key="G020004" chn="场所编号" eng="NETBAR_WACODE" rmk=""/>
+			<ITEM key="I070011" chn="采集设备编号" eng="COLLECTION_EQUIPMENT ID" rmk=""/>
+			<ITEM key="F010018" chn="采集设备经度" eng="COLLECTION_EQUIPMENT_LONGITUDE" rmk=""/>
+			<ITEM key="F010019" chn="采集设备纬度" eng="COLLECTION_EQUIPMENT_LATITUDE" rmk=""/>
+		</DATA>
+	</DATASET>
+</DATA>

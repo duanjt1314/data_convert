@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<!-- 数据质量的三列 -->
+		<column key="t1" chn="" formate="" tofield="t_site_id" fromfield="netbar_wacode" defaultValue="" ></column>
+		<column key="t2" chn="" formate="" tofield="t_device_id" fromfield="equipment_id" defaultValue="" ></column>
+		<column key="t3" chn="" formate="" tofield="t_source_site_id" fromfield="netbar_wacode" defaultValue="" ></column>
+		
+		<!--1认证类型-->
+		<column  key="1"  chn="" formate=""  tofield="AUTH_TYPE"     fromfield="identification_type" defaultValue="123456"></column>
+		<!--2认证帐号-->
+		<column  key="2"  chn="" formate=""  tofield="AUTH_ACCOUNT"        fromfield="certificate_code"  defaultValue="123456"   ></column>
+		<!--3上网服务场所编码-->
+		<column  key="3"  chn="" formate=""  tofield="NETBAR_WACODE" fromfield="netbar_wacode" defaultValue=""  ></column>
+		<!--4场所类型-->
+		<column  key="4"  chn="" formate=""  tofield="NetSite_Type" fromfield="substring(row[netbar_wacode],7,8)"  defaultValue="2"   ></column>
+		<!--5身份证件类型-->
+		<column  key="5"  chn="" formate=""  tofield="CERTIFICATE_TYPE"      fromfield="identification_type" defaultValue="111"></column>
+		<!--6身份证件号码-->
+		<column  key="6"  chn="" formate=""  tofield="CERTIFICATE_CODE"     fromfield="certificate_code"  defaultValue="0"   ></column>
+		<!--7APP厂商名称-->
+		<column  key="7"  chn="" formate=""  tofield="APP_COMPANY_NAME"  fromfield="firm_id"  defaultValue=""  ></column>
+		<!--8APP应用软件名称-->
+		<column  key="8"  chn="" formate=""  tofield="APP_SOFTWARE_NAME"    fromfield="firm_id" defaultValue=""   ></column>
+		<!--9APP版本号-->
+		<column  key="9"  chn="" formate=""  tofield="APP_VERSION"   fromfield=""  defaultValue=""></column>
+		<!--10APP终端认证码-->
+		<column  key="10"  chn="" formate=""  tofield="APPID"         fromfield="" defaultValue=""   ></column>
+		<!--11上线时间-->
+		<column  key="11"  chn="" formate=""  tofield="START_TIME"          fromfield="start_time" defaultValue=""  ></column>
+		<!--12下线时间-->
+		<column  key="12"  chn="" formate=""  tofield="END_TIME"             fromfield="end_time"  defaultValue=""   ></column>
+		<!--13场所内网IP地址-->
+		<column  key="13"  chn="" formate=""  tofield="IP_ADDRESS"       fromfield="" defaultValue=""></column>
+		<!--14源外网IPv4地址-->
+		<column  key="14"  chn="" formate=""  tofield="SRC_IP"     fromfield="" defaultValue=""   ></column>
+		<!--15源外网IPv6地址-->
+		<column  key="15"  chn="" formate=""  tofield="SRC_IPV6"        fromfield="" defaultValue=""  ></column>
+		<!--16源外网IPv4起始端口号-->
+		<column  key="16"  chn="" formate=""  tofield="SRC_PORT_START"        fromfield=""  defaultValue=""   ></column>
+		<!--17源外网IPv4结束端口号-->
+		<column  key="17"  chn="" formate=""  tofield="SRC_PORT_END"     fromfield="" defaultValue=""  ></column>
+		<!--18源外网IPv6起始端口号-->
+		<column  key="18"  chn="" formate=""  tofield="SRC_PORT_START_V6"       fromfield=""  defaultValue=""   ></column>
+		<!--19源外网IPv6结束端口号-->
+		<column  key="19"  chn="" formate=""  tofield="SRC_PORT_END_V6"     fromfield="" defaultValue=""  ></column>
+		<!--20终端MAC地址-->
+		<column  key="20"  chn="" formate=""  tofield="MAC"       fromfield="mac"  defaultValue=""   ></column>
+		<!--21AP设备编号-->
+		<column  key="21"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT_ID"     fromfield="equipment_id" defaultValue=""  ></column>
+		<!--22AP设备MAC地址-->
+		<column  key="22"  chn="" formate=""  tofield="AP_MAC"       fromfield="mac"  defaultValue=""   ></column>
+		<!--23移动AP经度-->
+		<column  key="23"  chn="" formate=""  tofield="LONGITUDE"     fromfield="equipment_longitude" defaultValue=""  ></column>
+		<!--24移动AP纬度-->
+		<column  key="24"  chn="" formate=""  tofield="LATITUDE"       fromfield="equipment_latitude"  defaultValue=""   ></column>
+		<!--25会话ID-->
+		<column  key="25"  chn="" formate=""  tofield="SESSIONID"     fromfield="id" defaultValue=""  ></column>
+		<!--26场强-->
+		<column  key="26"  chn="" formate=""  tofield="TERMINAL_FIELD STRENGTH"       fromfield="terminal_field_strength"  defaultValue=""   ></column>
+		<!--27X坐标-->
+		<column  key="27"  chn="" formate=""  tofield="X_COORDINATE"     fromfield="x_coordinate" defaultValue=""  ></column>
+		<!--28Y坐标-->
+		<column  key="28"  chn="" formate=""  tofield="Y_COORDINATE"       fromfield="y_coordinate"  defaultValue=""   ></column>
+		<!--29上网人员姓名-->
+		<column  key="29"  chn="" formate=""  tofield="Name"     fromfield=""  defaultValue=""  ></column>
+		<!--30终端IMSI码-->
+		<column  key="30"  chn="" formate=""  tofield="IMSI"       fromfield="" defaultValue=""   ></column>
+		<!--31终端IMEI码-->
+		<column  key="31"  chn="" formate=""  tofield="IMEI_ESN_MEID"  fromfield="" defaultValue=""   ></column>
+		<!--32终端系统-->
+		<column  key="32"  chn="" formate=""  tofield="OS_NAME"       fromfield="" defaultValue=""   ></column>
+		<!--33终端品牌-->
+		<column  key="33"  chn="" formate=""  tofield="BRAND"       fromfield="brand" defaultValue=""   ></column>
+		<!--34终端型号-->
+		<column  key="34"  chn="" formate=""  tofield="MODEL"       fromfield="" defaultValue=""   ></column>
+		<!--35手机号码-->
+		<column  key="35"  chn="" formate=""  tofield="PICKUP_PHONE"       fromfield="" defaultValue=""   ></column>
+	</columns>
+</config>

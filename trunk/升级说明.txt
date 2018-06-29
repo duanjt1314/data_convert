@@ -1,10 +1,28 @@
 作者:段江涛
 版本:1.1.0
-时间:2018-06-27
+时间:2018-06-29
 修改内容:
 	1.增加从文件读取数据并转换文件的功能
+	2.日志记录方式由log4j2.x修改为log4j1.x版本。同时将结果推送到es里面
+	3.增加数据保障功能，将数据保障结果推送到kafka消息队列，topic是：bocai-logs-translog
 部署说明:
-	1.首次发布，需要配置config目录下的相关配置，具体配置可查看配置文档。
+	1.config.xml中config>appSetting下增加sourceDir节点，用于配置需要解析的文件目录
+		<sourceDir>F:/switch100/log</sourceDir>
+	2.config.xml中，task增加fileType属性节点，用于配置需要解析的文件类型.searchPattern用于配置解析文件名所包含的内容。如：
+		<task id="0001" topic="" fileType="gz">
+			<searchPattern>
+				<item>*WifiTerminalInfoLog*</item>
+			</searchPattern>
+		</task>
+	3.config.xml中，task配置如下三个节点才会生成数据保障数据(分别表示场所编码列、设备编码列和源场所编码列)：
+		<siteIdName>t_site_id</siteIdName>
+		<deviceIdName>t_device_id</deviceIdName>
+		<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
+	4.第三点必须配合这一点进行使用，需要在数据转换列配置里面配置上面指定的三列，待数据转换成功后，这三列将被删除。
+		<column key="t1" chn="" formate="" tofield="t_site_id" fromfield="netbar_wacode" defaultValue="" ></column>
+		<column key="t2" chn="" formate="" tofield="t_device_id" fromfield="equipment_id" defaultValue="" ></column>
+		<column key="t3" chn="" formate="" tofield="t_source_site_id" fromfield="netbar_wacode" defaultValue="" ></column>
+	5.日志配置由以前的log4j.xml修改为了log4j.properties。具体配置可参考《配置说明.doc》		
 备注:
 	1.无
 --------------------------------------------------------------------
