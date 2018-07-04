@@ -5,7 +5,7 @@
 		<column key="t1" chn="" formate="" tofield="t_site_id" fromfield="netbar_wacode" defaultValue="" ></column>
 		<column key="t2" chn="" formate="" tofield="t_device_id" fromfield="equipment_id" defaultValue="" ></column>
 		<column key="t3" chn="" formate="" tofield="t_source_site_id" fromfield="netbar_wacode" defaultValue="" ></column>
-		
+
 		<!--1认证类型-->
 		<column  key="1"  chn="" formate=""  tofield="AUTH_TYPE"     fromfield="identification_type" defaultValue="123456"></column>
 		<!--2认证帐号-->
