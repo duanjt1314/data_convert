@@ -2,28 +2,28 @@
 <config>
 	<columns>
 		<!--1热点MAC地址-->
-		<DataColumn  key="1"  chn="" formate=""  tofield="AP_MAC"     fromfield="hotspot_mac"  defaultValue=""></DataColumn>
+		<column  key="1"  chn="" formate=""  tofield="AP_MAC"     fromfield="hotspot_mac"  defaultValue=""></column>
 		<!--2热点SSID-->
-		<DataColumn  key="2"  chn="" formate=""  tofield="AP_SSID"        fromfield="SSID" defaultValue=""   ></DataColumn>
+		<column  key="2"  chn="" formate=""  tofield="AP_SSID"        fromfield="SSID" defaultValue=""   ></column>
 		<!--4热点频道-->
-		<DataColumn  key="3"  chn="" formate=""  tofield="AP_CHANNEL" fromfield="channel"  defaultValue=""  ></DataColumn>
+		<column  key="3"  chn="" formate=""  tofield="AP_CHANNEL" fromfield="channel"  defaultValue=""  ></column>
 		<!--5热点加密类型-->
-		<DataColumn  key="4"  chn="" formate=""  tofield="ENCRYPT_ALGORITHM_TYPE" fromfield="id_enctypt_type" defaultValue=""   ></DataColumn>
+		<column  key="4"  chn="" formate=""  tofield="ENCRYPT_ALGORITHM_TYPE" fromfield="id_enctypt_type" defaultValue=""   ></column>
 		<!--6采集时间-->
-		<DataColumn  key="5"  chn="" formate=""  tofield="CAPTURE_TIME"      fromfield="DETECT_TIME"  defaultValue="0"></DataColumn>
+		<column  key="5"  chn="" formate=""  tofield="CAPTURE_TIME"      fromfield="DETECT_TIME"  defaultValue="0"></column>
 		<!--7热点场强-->
-		<DataColumn  key="6"  chn="" formate=""  tofield="AP_FIELD STRENGTH"     fromfield="field_strength" defaultValue="0"   ></DataColumn>
+		<column  key="6"  chn="" formate=""  tofield="AP_FIELD STRENGTH"     fromfield="field_strength" defaultValue="0"   ></column>
 		<!--8X坐标-->
-		<DataColumn  key="7"  chn="" formate=""  tofield="X_COORDINATE"             fromfield="posx" defaultValue=""   ></DataColumn>
+		<column  key="7"  chn="" formate=""  tofield="X_COORDINATE"             fromfield="posx" defaultValue=""   ></column>
 		<!--9Y坐标-->
-		<DataColumn  key="8"  chn="" formate=""  tofield="Y_COORDINATE"       fromfield="posy"  defaultValue=""></DataColumn>
+		<column  key="8"  chn="" formate=""  tofield="Y_COORDINATE"       fromfield="posy"  defaultValue=""></column>
 		<!--10场所编号-->
-		<DataColumn  key="9"  chn="" formate=""  tofield="NETBAR_WACODE"     fromfield="site_id" defaultValue=""   ></DataColumn>
+		<column  key="9"  chn="" formate=""  tofield="NETBAR_WACODE"     fromfield="site_id" defaultValue=""   ></column>
 		<!--11采集设备编号-->
-		<DataColumn  key="10"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT ID"        fromfield="device_id"  defaultValue=""  ></DataColumn>
+		<column  key="10"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT ID"        fromfield="device_id"  defaultValue=""  ></column>
 		<!--12采集设备经度-->
-		<DataColumn  key="11"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT_LONGITUDE"        fromfield="device_longti" defaultValue=""   ></DataColumn>
+		<column  key="11"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT_LONGITUDE"        fromfield="device_longti" defaultValue=""   ></column>
 		<!--13采集设备纬度-->
-		<DataColumn  key="12"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT_LATITUDE"     fromfield="device_lat"  defaultValue=""  ></DataColumn>
+		<column  key="12"  chn="" formate=""  tofield="COLLECTION_EQUIPMENT_LATITUDE"     fromfield="device_lat"  defaultValue=""  ></column>
 	</columns>
 </config>
