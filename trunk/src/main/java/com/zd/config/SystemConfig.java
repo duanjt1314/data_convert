@@ -268,6 +268,10 @@ public class SystemConfig {
 			throw new Exception("任务编码:" + task.TaskId + ",路径:" + task.DataPath + "不存在");
 		}
 		task.ConvertColumns = analysisConvertColumn(task.DataPath);
+		
+		if(task.ConvertColumns.size()==0){
+			LogHelper.getLogger().error("任务:"+task.TaskId+",转换列为空，也许是list.xml中的column没有配置");
+		}
 
 		return task;
 
