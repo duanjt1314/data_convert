@@ -109,12 +109,12 @@ public class FileScan implements Runnable {
 				DataTable dt = ReadFile(file);
 				String convertId=UUID.randomUUID().toString();
 				new FileConvert(task, firm, convertId).DealFile(dt,file.getName());
-				return 1;
-			} else {
 				return 2;
+			} else {
+				return 3;
 			}
 		} catch (Exception ex) {
-			return 3;
+			return 1;
 		}
 	}
 

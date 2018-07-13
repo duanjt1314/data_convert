@@ -261,6 +261,8 @@ public class SystemConfig {
 		task.SiteIdName = XmlUtil.GetXmlElement(element, "siteIdName", "").toUpperCase();
 		task.DeviceIdName = XmlUtil.GetXmlElement(element, "deviceIdName", "").toUpperCase();
 		task.SourceSiteIdName = XmlUtil.GetXmlElement(element, "sourceSiteIdName", "").toUpperCase();
+		task.HasCompress = XmlUtil.GetXmlElement(element, "hasCompress", true);
+		task.HasIndex= XmlUtil.GetXmlElement(element, "hasIndex", true);
 
 		// 解析转换列的集合
 		File dataFile = new File(task.DataPath);
@@ -268,9 +270,9 @@ public class SystemConfig {
 			throw new Exception("任务编码:" + task.TaskId + ",路径:" + task.DataPath + "不存在");
 		}
 		task.ConvertColumns = analysisConvertColumn(task.DataPath);
-		
-		if(task.ConvertColumns.size()==0){
-			LogHelper.getLogger().error("任务:"+task.TaskId+",转换列为空，也许是list.xml中的column没有配置");
+
+		if (task.ConvertColumns.size() == 0) {
+			LogHelper.getLogger().error("任务:" + task.TaskId + ",转换列为空，也许是list.xml中的column没有配置");
 		}
 
 		return task;

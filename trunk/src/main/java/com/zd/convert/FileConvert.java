@@ -216,6 +216,19 @@ public class FileConvert {
 	 * @param list
 	 */
 	private void WriteFile(DataTable list, String regionId) {
+		if (ConvertTask.HasCompress) {
+			WriteFileCompress(list, regionId);
+		} else {
+			WriteFileNoCompress(list, regionId);
+		}
+	}
+
+	/**
+	 * 写入文件-需要压缩
+	 * @param list
+	 * @param regionId
+	 */
+	private void WriteFileCompress(DataTable list, String regionId) {
 		String path = "";
 		try {
 			// 创建目录
@@ -265,6 +278,57 @@ public class FileConvert {
 	}
 
 	/**
+	 * 写入文件，不需要压缩。直接把文件写入输出目录
+	 * @param list
+	 * @param regionId
+	 */
+	private void WriteFileNoCompress(DataTable list, String regionId) {
+		String path = "";
+		try {
+			path = PathUtil.Combine(SystemConfig.OutputDir, FirmInfo.FirmId);
+			File file = new File(path);
+			if (!file.exists())
+				file.mkdirs();// 创建目录
+			
+			// 替换并记录所有文件名称
+			String indexFileContent = FileUtil.ReadAllString(PathUtil.Combine(Helper.GetAppDir(), ConvertTask.IndexPath));
+			String dataFileName = FileNameReplace(ConvertTask.DataName, "", list.size() + "", regionId);
+			String indexFileName = FileNameReplace(ConvertTask.IndexName, dataFileName, list.size() + "", regionId);
+			// String zipName = FileNameReplace(ConvertTask.ZipName,
+			// dataFileName, list.size() + "", regionId);
+			indexFileContent = FileNameReplace(indexFileContent, dataFileName, list.size() + "", regionId);
+
+			boolean res = true;
+			if (ConvertTask.HasIndex) {
+				res = WriteIndexFile(PathUtil.Combine(path, indexFileName), indexFileContent);
+				if (res) {
+					LogHelper.getLogger().info("索引文件写入成功:" + PathUtil.Combine(path, indexFileName));
+				}
+			}
+			if (!res) {
+				String fileName = WriteErrorFile(list);
+				LogHelper.getLogger().error(GetLogPrefix() + "写入索引文件错误，任务:" + ConvertTask.TaskId + " 厂商:" + FirmInfo + ".错误文件存放到:" + fileName);
+				return;
+			}
+
+			res = WriteDataFile(list.copy(), PathUtil.Combine(path, dataFileName));
+			if (!res) {
+				String fileName = WriteErrorFile(list);
+				LogHelper.getLogger().error(GetLogPrefix() + "写入数据文件错误，任务:" + ConvertTask.TaskId + " 厂商:" + FirmInfo + ".错误文件存放到:" + fileName);
+				return;
+			} else {
+				LogHelper.getLogger().info(String.format(GetLogPrefix() + "数据文件写入成功:%s", //
+						PathUtil.Combine(path, dataFileName)));
+			}
+
+			// 数据质量
+			WriteTransLog(list, PathUtil.Combine(path, dataFileName));
+		} catch (Exception e) {
+			LogHelper.getLogger().error(GetLogPrefix() + "写入文件出现异常，参数:" + StringUtil.GetJsonString(list), e);
+		}
+	}
+
+	/**
 	 * 写入数据文件
 	 * 
 	 * @param list
@@ -289,9 +353,16 @@ public class FileConvert {
 			}
 
 			// 写入文件
-			String content = StringUtil.Map2String(list, false);
-			FileUtil.WriteAllString(url, content);
-			return true;
+			if(ConvertTask.DataType.equals("zbf-gz")){
+				String content = StringUtil.Map2String(list, true);
+				GZipUtil.Compress(content, url);
+				return true;
+			}else{//默认是zbf
+				String content=StringUtil.Map2String(list, false);
+				FileUtil.WriteAllString(url, content);
+				return true;
+			}
+			
 		} catch (Exception e) {
 			LogHelper.getLogger().error(GetLogPrefix() + "写入文件" + url + "出现错误", e);
 			return false;
@@ -360,23 +431,23 @@ public class FileConvert {
 
 				// 推送到kafka
 				for (String mk : map.keySet()) {
-					String siteId=mk.split("&")[0];
-					String deviceId=mk.split("&")[1];
-					String sourceSiteId=mk.split("&")[2];
-					
+					String siteId = mk.split("&")[0];
+					String deviceId = mk.split("&")[1];
+					String sourceSiteId = mk.split("&")[2];
+
 					List<String> dataArr = new ArrayList<String>();
 					long tran_date = new Date().getTime() / 1000;
-					dataArr.add(CheckSumId.GetId(tran_date, siteId,deviceId,sourceSiteId));
+					dataArr.add(CheckSumId.GetId(tran_date, siteId, deviceId, sourceSiteId));
 					dataArr.add(siteId);
 					dataArr.add(deviceId);
 					dataArr.add(FirmInfo.FirmId);
-					dataArr.add(tran_date+"");
+					dataArr.add(tran_date + "");
 					dataArr.add(ConvertTask.TaskId);
 					dataArr.add(SourceFileName);
 					dataArr.add(zipName);
-					dataArr.add(map.get(mk)+"");//数量
+					dataArr.add(map.get(mk) + "");// 数量
 					dataArr.add(sourceSiteId);
-					
+
 					Kafka.SendTransKafka(String.join("\t", dataArr));
 				}
 			}
