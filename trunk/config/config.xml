@@ -36,11 +36,11 @@
 			终端特征 ，bocai-logs-terminallog-145
 			存在FileType就表示从文件读取
 			-->
-			<task id="Task_001" topic="" fileType="xml">				
+			<task id="Task_001" topic="bocai-logs-terminallog-145" fileType="">				
 				<!-- 配置从文件中读取的匹配模式 -->
-				<searchPattern>
+				<!-- <searchPattern>
 					<item>*WifiTerminalInfoLog*</item>
-				</searchPattern>
+				</searchPattern> -->
 				<!-- 索引文件配置 -->
 				<indexPath>/config/firms/gz/WA_SOURCE_FJ_0001/WA_SOURCE_FJ_0001.xml</indexPath>
 				<indexName>GAB_ZIP_INDEX.xml</indexName>

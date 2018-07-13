@@ -9,7 +9,10 @@ import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -38,6 +41,12 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 	private ExecutorService executorPool;
 
 	private KafkaAction kafkaAction;
+	private boolean isRunning;
+
+	/**
+	 * 存放topic和数据的集合，超过5000条就处理
+	 */
+	private Map<String, ArrayList<String>> dicData = new HashMap<String, ArrayList<String>>();
 
 	/**
 	 * 构造函数
@@ -71,36 +80,44 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 
 	@Override
 	public void run() {
+		isRunning = true;
+		// 开辟子线程定时去执行写入数据
+		Thread t = new Thread() {
+			public void run() {
+				int i = 0;
+				while (isRunning) {
+					try {
+						if (i > 30) {
+							DealData();
+							i = 0;
+						}
+						Thread.sleep(1000);
+						i++;
+					} catch (Exception e) {
+					}
+				}
+			}
+		};
+		t.start();
+
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(100);
 			if (records.count() > 0) {
-				Map<String, String> map = new HashMap<String, String>();
+				LogHelper.getLogger().debug("接收到kafka数据，total:" + records.count());
 				for (ConsumerRecord<String, String> record : records) {
 					if (!StringUtil.IsNullOrEmpty(record.value())) {
-						String str = record.value().replace("\r\n", "") + "\r\n";// 先把源数据中可能存在的换行符删了
-						if (map.containsKey(record.topic())) {
-							str = map.get(record.topic()) + str;
+						synchronized (dicData) {
+							ArrayList<String> ls = null;
+							if (dicData.containsKey(record.topic())) {
+								ls = dicData.get(record.topic());
+							} else {
+								ls = new ArrayList<String>();
+							}
+							ls.add(record.value());
+							dicData.put(record.topic(), ls);
 						}
-						map.put(record.topic(), str);
 					} else {
 						LogHelper.getLogger().warn("从消息队列拉取的消息为空，topic:" + record.topic());
-					}
-				}
-
-				String ts = "";
-				for (String key : map.keySet()) {
-					ts += key + "|";
-				}
-				LogHelper.getLogger().debug("接收到数据,数据总条数：" + records.count() + ",topic:" + ts);
-
-				if (kafkaAction != null) {
-					for (String key : map.keySet()) {
-						String content = map.get(key);
-						String title = TableTitle.getTitle(key);
-						if (!title.equals("")) {
-							content = title + "\r\n" + content;
-						}
-						kafkaAction.RecevieMsg(content, key);
 					}
 
 				}
@@ -109,7 +126,44 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 		}
 	}
 
+	private void DealData() {
+		int pageCount = 5000;
+		synchronized (dicData) {
+			if (kafkaAction != null) {
+				for (String topic : dicData.keySet()) {
+					String title = TableTitle.getTitle(topic);
+					if (!title.equals("")) {
+						if (dicData.get(topic).size() <= pageCount) {
+							String content = StringUtils.join(dicData.get(topic), "\r\n");
+							content = title + "\r\n" + content;
+							kafkaAction.RecevieMsg(content, topic);
+						} else {
+							// 大于5000条，分页							
+							int pageSize = dicData.get(topic).size() / pageCount;
+							if (dicData.get(topic).size() % pageCount > 0) {
+								pageSize += 1;
+							}
+							for (int i = 0; i < pageSize; i++) {
+								List<String> arr = dicData.get(topic).stream().skip(i * pageCount).limit(pageCount).collect(Collectors.toList());
+								String content = StringUtils.join(arr, "\r\n");
+								content = title + "\r\n" + content;
+								kafkaAction.RecevieMsg(content, topic);
+							}
+						}
+					} else {
+						LogHelper.getLogger().error("topic:" + topic + " 在数据库表config_datasource中未找到对应的数据");
+					}
+
+					dicData.remove(topic);
+				}
+			}
+		}
+	}
+
 	public void shutdown() {
+		isRunning = false;
+		DealData();
+
 		// 1. 关闭和Kafka的连接，这样会导致stream.hashNext返回false
 		if (this.consumer != null) {
 			this.consumer.close();

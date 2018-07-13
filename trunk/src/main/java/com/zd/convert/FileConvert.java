@@ -289,7 +289,7 @@ public class FileConvert {
 			File file = new File(path);
 			if (!file.exists())
 				file.mkdirs();// 创建目录
-			
+
 			// 替换并记录所有文件名称
 			String indexFileContent = FileUtil.ReadAllString(PathUtil.Combine(Helper.GetAppDir(), ConvertTask.IndexPath));
 			String dataFileName = FileNameReplace(ConvertTask.DataName, "", list.size() + "", regionId);
@@ -318,7 +318,7 @@ public class FileConvert {
 				return;
 			} else {
 				LogHelper.getLogger().info(String.format(GetLogPrefix() + "数据文件写入成功:%s", //
-						PathUtil.Combine(path, dataFileName)));
+						PathUtil.Combine(path, dataFileName)) + ",总条数：" + list.size());
 			}
 
 			// 数据质量
@@ -353,16 +353,16 @@ public class FileConvert {
 			}
 
 			// 写入文件
-			if(ConvertTask.DataType.equals("zbf-gz")){
+			if (ConvertTask.DataType.equals("zbf-gz")) {
 				String content = StringUtil.Map2String(list, true);
 				GZipUtil.Compress(content, url);
 				return true;
-			}else{//默认是zbf
-				String content=StringUtil.Map2String(list, false);
+			} else {// 默认是zbf
+				String content = StringUtil.Map2String(list, false);
 				FileUtil.WriteAllString(url, content);
 				return true;
 			}
-			
+
 		} catch (Exception e) {
 			LogHelper.getLogger().error(GetLogPrefix() + "写入文件" + url + "出现错误", e);
 			return false;
