@@ -87,7 +87,7 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 				int i = 0;
 				while (isRunning) {
 					try {
-						if (i > 30) {
+						if (i > 180) {//3分钟写一次
 							DealData();
 							i = 0;
 						}

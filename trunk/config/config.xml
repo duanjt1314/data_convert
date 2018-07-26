@@ -31,22 +31,12 @@
 	<!-- 厂商任务配置 -->
 	<firms>
 		<!-- id:厂商编码 name:厂商名称 convertDic:厂商字典格式化地址,可为空 -->
-		<firm id="gz" name="gz" convertDic="/config/firms/gz/convertDic.xml">		
-			<!-- 
-			终端特征 ，bocai-logs-terminallog-145
-			存在FileType就表示从文件读取
-			-->
-			<task id="Task_001" topic="bocai-logs-terminallog-145" fileType="">				
-				<!-- 配置从文件中读取的匹配模式 -->
-				<!-- <searchPattern>
-					<item>*WifiTerminalInfoLog*</item>
-				</searchPattern> -->
-				<!-- 索引文件配置 -->
-				<indexPath>/config/firms/gz/WA_SOURCE_FJ_0001/WA_SOURCE_FJ_0001.xml</indexPath>
-				<indexName>GAB_ZIP_INDEX.xml</indexName>
+		<firm id="gz" name="gz" convertDic="/config/firms/gz/convertDic.xml">
+			<!-- app信息 -->
+			<task id="appinfo" topic="bocai-logs-appscaninfo" fileType="">
 				<!-- 数据文件配置 -->
-				<dataPath>/config/firms/gz/WA_SOURCE_FJ_0001/list.xml</dataPath>
-				<dataName>145-440100-@@timeint-@@sequence5-WA_SOURCE_0001-0.gz</dataName>
+				<dataPath>/config/firms/gz/appinfo/list.xml</dataPath>
+				<dataName>@@timeint-@@sequence5-appinfo.gz</dataName>
 				
 				<!-- 数据文件类型,json、xml、zbf(制表符) -->
 				<dataType>zbf-gz</dataType>
@@ -54,11 +44,32 @@
 				<hasCompress>false</hasCompress>
 				<!-- 是否包含所有文件 -->
 				<hasIndex>false</hasIndex>
+			</task>
+			<!-- app图片 -->
+			<task id="appiconinfo" topic="bocai-logs-appiconinfo" fileType="">
+				<!-- 数据文件配置 -->
+				<dataPath>/config/firms/gz/appiconinfo/list.xml</dataPath>
+				<dataName>@@timeint-@@sequence5-appiconinfo.gz</dataName>
 				
-				<!-- 数据保障配置,转换成功后，这三列都将被删除 -->
-				<siteIdName>t_site_id</siteIdName>
-				<deviceIdName>t_device_id</deviceIdName>
-				<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
+				<!-- 数据文件类型,json、xml、zbf(制表符) -->
+				<dataType>zbf-gz</dataType>
+				<!-- 是否压缩，默认要压缩 -->
+				<hasCompress>false</hasCompress>
+				<!-- 是否包含所有文件 -->
+				<hasIndex>false</hasIndex>
+			</task>
+			<!-- 网站备案 -->
+			<task id="websitescaninfo" topic="bocai-logs-websitescaninfo" fileType="">
+				<!-- 数据文件配置 -->
+				<dataPath>/config/firms/gz/websitescaninfo/list.xml</dataPath>
+				<dataName>@@timeint-@@sequence5-appiconinfo.gz</dataName>
+				
+				<!-- 数据文件类型,json、xml、zbf(制表符) -->
+				<dataType>zbf-gz</dataType>
+				<!-- 是否压缩，默认要压缩 -->
+				<hasCompress>false</hasCompress>
+				<!-- 是否包含索引文件 -->
+				<hasIndex>false</hasIndex>
 			</task>
 		</firm>
 	</firms>

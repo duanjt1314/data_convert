@@ -290,16 +290,12 @@ public class FileConvert {
 			if (!file.exists())
 				file.mkdirs();// 创建目录
 
-			// 替换并记录所有文件名称
-			String indexFileContent = FileUtil.ReadAllString(PathUtil.Combine(Helper.GetAppDir(), ConvertTask.IndexPath));
 			String dataFileName = FileNameReplace(ConvertTask.DataName, "", list.size() + "", regionId);
-			String indexFileName = FileNameReplace(ConvertTask.IndexName, dataFileName, list.size() + "", regionId);
-			// String zipName = FileNameReplace(ConvertTask.ZipName,
-			// dataFileName, list.size() + "", regionId);
-			indexFileContent = FileNameReplace(indexFileContent, dataFileName, list.size() + "", regionId);
-
+			
 			boolean res = true;
 			if (ConvertTask.HasIndex) {
+				String indexFileContent = FileUtil.ReadAllString(PathUtil.Combine(Helper.GetAppDir(), ConvertTask.IndexPath));
+				String indexFileName = FileNameReplace(ConvertTask.IndexName, dataFileName, list.size() + "", regionId);
 				res = WriteIndexFile(PathUtil.Combine(path, indexFileName), indexFileContent);
 				if (res) {
 					LogHelper.getLogger().info("索引文件写入成功:" + PathUtil.Combine(path, indexFileName));
