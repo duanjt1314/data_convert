@@ -1,4 +1,24 @@
 作者:段江涛
+版本:1.3.0
+时间:2018-07-31
+修改内容:
+	1.增加从数据库读取数据并转换文件
+部署说明:
+	1.config.xml中，config>firms>firm>task增加属性dbAble="true",用于标识启用数据库访问
+	2.config.xml中，config>firms>firm>task增加子节点sql,用于配置sql脚本的具体信息。其中
+		keyName：增长列的名称
+		start：第一次请求的进度值
+		resetIntervalMinute：间隔多少分钟全量转换一次
+	示例配置如下：
+	<task id="xxx" topic="" fileType="" dbAble="true">
+		<sql keyName="update_time" start="0" resetIntervalMinute="2">
+			select * from app_info a where update_time>@@inttime order by update_time asc
+		</sql>
+	</task>	
+备注:
+	1.list.xml文件还是和之前的配置一样
+--------------------------------------------------------------------
+作者:段江涛
 版本:1.2.0
 时间:2018-07-26
 修改内容:

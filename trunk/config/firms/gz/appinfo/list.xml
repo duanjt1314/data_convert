@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<column key="1" chn="" formate="" tofield="operate_type" fromfield="operate_type" defaultValue=""></column>
+		<column key="2" chn="" formate="" tofield="key" fromfield="key" defaultValue=""></column>
+		<column key="3" chn="" formate="" tofield="key_value" fromfield="key_value" defaultValue=""></column>
+		<column key="4" chn="" formate="" tofield="app_id" fromfield="app_id" defaultValue=""></column>
+		<column key="5" chn="" formate="" tofield="app_name" fromfield="app_name" defaultValue=""></column>
+		<column key="6" chn="" formate="" tofield="source_market" fromfield="source_market" defaultValue=""></column>
+		<column key="7" chn="" formate="" tofield="version" fromfield="version" defaultValue=""></column>
+		<column key="8" chn="" formate="" tofield="update_time" fromfield="update_time" defaultValue=""></column>
+		<column key="9" chn="" formate="" tofield="download_times" fromfield="download_times" defaultValue=""></column>
+		<column key="10" chn="" formate="" tofield="evaluation_index" fromfield="evaluation_index" defaultValue=""></column>
+		<column key="11" chn="" formate="" tofield="app_down_url" fromfield="app_down_url" defaultValue=""></column>
+		<column key="12" chn="" formate="" tofield="app_org" fromfield="app_org" defaultValue=""></column>
+		<column key="13" chn="" formate="" tofield="app_market_url" fromfield="app_market_url" defaultValue=""></column>
+		<column key="14" chn="" formate="" tofield="org_tel" fromfield="org_tel" defaultValue=""></column>
+		<column key="15" chn="" formate="" tofield="org_mail" fromfield="org_mail" defaultValue=""></column>
+		<column key="16" chn="" formate="" tofield="app_devp" fromfield="app_devp" defaultValue=""></column>
+		<column key="17" chn="" formate="" tofield="devp_url" fromfield="devp_url" defaultValue=""></column>
+		<column key="18" chn="" formate="" tofield="devp_tel" fromfield="devp_tel" defaultValue=""></column>
+		<column key="19" chn="" formate="" tofield="devp_mail" fromfield="devp_mail" defaultValue=""></column>
+		<column key="20" chn="" formate="" tofield="is_illegal" fromfield="is_illegal" defaultValue=""></column>
+		<column key="21" chn="" formate="" tofield="illegal_reason" fromfield="illegal_reason" defaultValue=""></column>
+		<column key="22" chn="" formate="" tofield="soft_type" fromfield="soft_type" defaultValue=""></column>
+		<column key="23" chn="" formate="" tofield="violations_type" fromfield="violations_type" defaultValue=""></column>
+		<column key="24" chn="" formate="" tofield="introduce" fromfield="introduce" defaultValue=""></column>
+		<column key="25" chn="" formate="" tofield="authority" fromfield="authority" defaultValue=""></column>
+		<column key="26" chn="" formate="" tofield="app_org_addr" fromfield="app_org_addr" defaultValue=""></column>
+	</columns>
+</config>

@@ -6,6 +6,9 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
+
 import com.zd.config.DataBase;
 
 import cn.zdsoft.common.model.DataRow;
@@ -77,5 +80,18 @@ public class DBAction {
 			LogHelper.getLogger().error("数据库访问失败,sql:" + sql, ex);
 			return new DataTable();
 		}
+	}
+	
+	/**
+	 * 获取JdbcTemplate用于访问数据库
+	 * @return
+	 */
+	public JdbcTemplate getJdbcTemplate(){
+		DriverManagerDataSource dmds=new DriverManagerDataSource();
+		dmds.setDriverClassName(this.getDBDriver());
+		dmds.setUrl(this.getDBUrl());
+		dmds.setUsername(dataBase.getUserName());
+		dmds.setPassword(dataBase.getPassword());
+		return new JdbcTemplate(dmds);
 	}
 }

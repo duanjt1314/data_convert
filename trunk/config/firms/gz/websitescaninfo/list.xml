@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<column key="1" chn="" formate="" tofield="operate_type" fromfield="operate_type" defaultValue=""></column>
+		<column key="2" chn="" formate="" tofield="key" fromfield="key" defaultValue=""></column>
+		<column key="3" chn="" formate="" tofield="key_value" fromfield="key_value" defaultValue=""></column>
+		<column key="4" chn="" formate="" tofield="website_title" fromfield="website_title" defaultValue=""></column>
+		<column key="5" chn="" formate="" tofield="website_scan_url" fromfield="website_scan_url" defaultValue=""></column>
+		<column key="6" chn="" formate="" tofield="website_response_url" fromfield="website_response_url" defaultValue=""></column>
+		<column key="7" chn="" formate="" tofield="ip" fromfield="ip" defaultValue=""></column>
+		<column key="8" chn="" formate="" tofield="logtime" fromfield="logtime" defaultValue=""></column>
+		<column key="9" chn="" formate="" tofield="isrecord" fromfield="isrecord" defaultValue=""></column>
+		<column key="10" chn="" formate="" tofield="website_domain" fromfield="website_domain" defaultValue=""></column>
+	</columns>
+</config>

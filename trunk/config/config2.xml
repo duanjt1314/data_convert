@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<!-- kafka消息队列相关配置，没有配置kafka的Url地址表示不从Kafka拉取数据 -->
+	<kafka>
+		<url>192.168.23.76:9092,192.168.23.77:9092,192.168.23.78:9092</url>
+	</kafka>
+
+	<appSetting>
+		<!-- 来源目录 -->
+		<sourceDir>F:/switch100/log</sourceDir>
+		<!-- 转出目录,将会根据厂商创建目录 -->
+		<outputDir>F:/switch100/output</outputDir>
+		<!-- 错误目录,将会根据厂商创建目录,转换错误之后将数据写入记事本 -->
+		<errorDir>F:/switch100/error</errorDir>
+		<!-- 临时目录,用于解压/压缩临时目录，程序会自动删除处理后的文件 -->
+		<tempDir>F:/switch100/temp</tempDir>
+		<!-- 转换日志目录(数据质量文件) -->
+		<convertLogDir>F:/switch100/convertLog</convertLogDir>
+	</appSetting>
+	
+	<db>
+		<!-- mysql/oracle/sqlserver -->
+		<dbType>mysql</dbType>
+		<ip>192.168.23.79</ip>
+		<port>3306</port>
+		<serviceName>bocai</serviceName>
+		<userName>bocai</userName>
+		<password>123456</password>
+	</db>
+
+	<!-- 厂商任务配置 -->
+	<firms>
+		<!-- id:厂商编码 name:厂商名称 convertDic:厂商字典格式化地址,可为空 -->
+		<firm id="gz" name="gz" convertDic="/config/firms/gz/convertDic.xml">
+			<!-- app信息 -->
+			<task id="appinfo" topic="bocai-logs-appscaninfo" fileType="">
+				<!-- 数据文件配置 -->
+				<dataPath>/config/firms/gz/appinfo/list.xml</dataPath>
+				<dataName>@@timeint-@@sequence5-appinfo.gz</dataName>
+				
+				<!-- 数据文件类型,json、xml、zbf(制表符) -->
+				<dataType>zbf-gz</dataType>
+				<!-- 是否压缩，默认要压缩 -->
+				<hasCompress>false</hasCompress>
+				<!-- 是否包含所有文件 -->
+				<hasIndex>false</hasIndex>
+			</task>
+			<!-- app图片 -->
+			<task id="appiconinfo" topic="bocai-logs-appiconinfo" fileType="">
+				<!-- 数据文件配置 -->
+				<dataPath>/config/firms/gz/appiconinfo/list.xml</dataPath>
+				<dataName>@@timeint-@@sequence5-appiconinfo.gz</dataName>
+				
+				<!-- 数据文件类型,json、xml、zbf(制表符) -->
+				<dataType>zbf-gz</dataType>
+				<!-- 是否压缩，默认要压缩 -->
+				<hasCompress>false</hasCompress>
+				<!-- 是否包含所有文件 -->
+				<hasIndex>false</hasIndex>
+			</task>
+			<!-- 网站备案 -->
+			<task id="websitescaninfo" topic="bocai-logs-websitescaninfo" fileType="">
+				<!-- 数据文件配置 -->
+				<dataPath>/config/firms/gz/websitescaninfo/list.xml</dataPath>
+				<dataName>@@timeint-@@sequence5-appiconinfo.gz</dataName>
+				
+				<!-- 数据文件类型,json、xml、zbf(制表符) -->
+				<dataType>zbf-gz</dataType>
+				<!-- 是否压缩，默认要压缩 -->
+				<hasCompress>false</hasCompress>
+				<!-- 是否包含索引文件 -->
+				<hasIndex>false</hasIndex>
+			</task>
+		</firm>
+	</firms>
+</config>

@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.zd.config.ConvertFirm;
 import com.zd.config.ConvertTask;
 import com.zd.config.SystemConfig;
+import com.zd.kafka.DBProcess;
 import com.zd.kafka.FileScan;
 import com.zd.kafka.JavaKafkaConsumerHighAPI;
 import com.zd.kafka.KafkaAction;
@@ -24,11 +25,23 @@ import cn.zdsoft.common.StringUtil;
 public class StartUp extends Thread {
 	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
 	private FileScan fileScan = new FileScan();
+	private List<DBProcess> dBPros=new ArrayList<DBProcess>();
 
 	@Override
 	public void run() {
 		KafkaListen();
 		new Thread(fileScan).start();
+		
+		//数据库
+		for (ConvertFirm firm : SystemConfig.ConvertFirms) {
+			for (ConvertTask task : firm.Tasks) {
+				if(task.DbAble){
+					DBProcess dbProcess=new DBProcess(task, firm);
+					dbProcess.start();
+					dBPros.add(dbProcess);
+				}
+			}
+		}
 	}
 
 	/**
@@ -96,6 +109,9 @@ public class StartUp extends Thread {
 	public void Stop() {
 		javaKafkaConsumer.shutdown();
 		fileScan.stop();
+		for (DBProcess dbProcess : dBPros) {
+			dbProcess.finish();
+		}
 		LogHelper.getLogger().info("程序停止成功");
 	}
 }

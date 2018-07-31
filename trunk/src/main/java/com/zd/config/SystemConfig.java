@@ -262,7 +262,8 @@ public class SystemConfig {
 		task.DeviceIdName = XmlUtil.GetXmlElement(element, "deviceIdName", "").toUpperCase();
 		task.SourceSiteIdName = XmlUtil.GetXmlElement(element, "sourceSiteIdName", "").toUpperCase();
 		task.HasCompress = XmlUtil.GetXmlElement(element, "hasCompress", true);
-		task.HasIndex= XmlUtil.GetXmlElement(element, "hasIndex", true);
+		task.HasIndex = XmlUtil.GetXmlElement(element, "hasIndex", true);
+		task.DbAble = XmlUtil.GetXmlAttr(element, "dbAble", false);
 
 		// 解析转换列的集合
 		File dataFile = new File(task.DataPath);
@@ -273,6 +274,21 @@ public class SystemConfig {
 
 		if (task.ConvertColumns.size() == 0) {
 			LogHelper.getLogger().error("任务:" + task.TaskId + ",转换列为空，也许是list.xml中的column没有配置");
+		}
+		
+		//解析数据库转换相关配置（主要用于基础数据的转换）
+		if(task.DbAble){
+			Element sqlEle=element.element("sql");
+			if(sqlEle==null){
+				LogHelper.getLogger().error("任务:" + task.TaskId + "配置的DbAble为true，但是却没有配置sql节点");
+				task.DbAble=false;
+			}else{
+				task.ConvertSql=new ConvertSql();
+				task.ConvertSql.Sql=sqlEle.getText();
+				task.ConvertSql.KeyName=sqlEle.attribute("keyName").getText();
+				task.ConvertSql.Start=XmlUtil.GetXmlAttr(sqlEle, "start", 0);
+				task.ConvertSql.ResetIntervalMinute=XmlUtil.GetXmlAttr(sqlEle, "resetIntervalMinute", 0);
+			}
 		}
 
 		return task;

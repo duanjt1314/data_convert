@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<column key="1" chn="" formate="" tofield="operate_type" fromfield="operate_type" defaultValue=""></column>
+		<column key="2" chn="" formate="" tofield="key" fromfield="key" defaultValue=""></column>
+		<column key="3" chn="" formate="" tofield="key_value" fromfield="key_value" defaultValue=""></column>
+		<column key="4" chn="" formate="" tofield="app_id" fromfield="app_id" defaultValue=""></column>
+		<column key="5" chn="" formate="" tofield="pic_type" fromfield="pic_type" defaultValue=""></column>
+		<column key="6" chn="" formate="" tofield="ord" fromfield="ord" defaultValue=""></column>
+		<column key="7" chn="" formate="" tofield="content" fromfield="content" defaultValue=""></column>
+	</columns>
+</config>

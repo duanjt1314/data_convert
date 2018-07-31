@@ -71,6 +71,14 @@ public class ConvertTask {
 	 * 是否包含所有文件
 	 */
 	public boolean HasIndex = true;
+	/**
+	 * 是否访问数据库
+	 */
+	public boolean DbAble = false;
+	/**
+	 * 数据库转换相关配置
+	 */
+	public ConvertSql ConvertSql;
 
 	/**
 	 * 需要解析的文件名内容。只要文件名里面包含了该内容就会被解析
