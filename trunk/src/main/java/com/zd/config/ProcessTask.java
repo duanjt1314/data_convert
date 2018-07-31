@@ -129,7 +129,7 @@ public class ProcessTask {
 	private static void saveToXml() {
 		try {
 			Document document = DocumentHelper.createDocument();
-			Element root = DocumentHelper.createElement("student");
+			Element root = DocumentHelper.createElement("config");
 			document.setRootElement(root);
 
 			for (TaskPro taskPro : taskPros) {
