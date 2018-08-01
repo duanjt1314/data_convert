@@ -123,10 +123,8 @@ public class SystemConfig {
 	 */
 	private static void analysisDB(Element element) {
 		DataBase = new DataBase();
-		DataBase.setDbType(element.element("dbType").getText());
-		DataBase.setIp(element.element("ip").getText());
-		DataBase.setPort(element.element("port").getText());
-		DataBase.setServiceName(element.element("serviceName").getText());
+		DataBase.setDriver(element.element("driver").getText());
+		DataBase.setUrl(element.element("url").getText());
 		DataBase.setUserName(element.element("userName").getText());
 		DataBase.setPassword(element.element("password").getText());
 	}

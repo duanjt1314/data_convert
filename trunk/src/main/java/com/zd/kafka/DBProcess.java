@@ -3,9 +3,13 @@ package com.zd.kafka;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowCallbackHandler;
@@ -29,12 +33,12 @@ import cn.zdsoft.common.model.DataTable;
  * @author 段江涛
  * @date 2018-07-31
  */
-public class DBProcess extends Thread {
+public class DBProcess {
 	private ConvertTask convertTask;
 	private ConvertFirm firmInfo;
 	private String convertId;
 	private DBAction dbAction;
-	private boolean started = false;
+	ScheduledExecutorService service = null;
 
 	public DBProcess(ConvertTask convertTask, ConvertFirm firmInfo) {
 		this.convertTask = convertTask;
@@ -43,45 +47,51 @@ public class DBProcess extends Thread {
 		dbAction = new DBAction(SystemConfig.DataBase);
 	}
 
-	@Override
-	public void run() {
-		started = true;
-		boolean first = true;
-		int time = 0;
-		int inttime = 0;
-
-		while (started) {
-			try {
-				if (first) {
-					int p = ProcessTask.getProValue(this.firmInfo.FirmId, this.convertTask.TaskId);
-					if (p == 0)
-						inttime = convertTask.ConvertSql.Start;
-					else
-						inttime = p;
-					
-					first = false;
-					LogHelper.getLogger().debug("任务：" + convertTask.TaskId + " 初次访问，@@inttime设置为start的值");
-				} else {
-					if (convertTask.ConvertSql.ResetIntervalMinute > 0//
-							&& time > convertTask.ConvertSql.ResetIntervalMinute * 60) {
-						time = 0;
-						inttime = 0;// 重置
-						LogHelper.getLogger().debug("任务：" + convertTask.TaskId + " 到达了重置时间，@@inttime重置为0");
-					}
-				}
-
-				String sql = convertTask.ConvertSql.Sql.replaceAll("@@inttime", inttime + "");// sql
-				int res = executeDb(sql);
-				if (res > 0) {
-					inttime = res;
-					ProcessTask.saveProValue(new TaskPro(this.firmInfo.FirmId, this.convertTask.TaskId, res));
-				}
-
-				time += 10;
-				wait(10);// 等待10秒
-			} catch (Exception e) {
-				LogHelper.getLogger().error("任务:" + convertTask.TaskId + " 出现无法识别的异常", e);
+	public void start() {
+		Runnable runnable = new Runnable() {
+			public void run() {
+				fromDB();
 			}
+		};
+		service = Executors.newSingleThreadScheduledExecutor();
+		// 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
+		service.scheduleAtFixedRate(runnable, 1, 10, TimeUnit.SECONDS);
+
+	}
+
+	boolean first = true;// 是否为第一次转换，第一次转换将加载进度
+	long lastTime = new Date().getTime();// 上次全量时间
+	int inttime = 0;// 记录上次的进度
+
+	public void fromDB() {
+		try {
+			if (first) {
+				int p = ProcessTask.getProValue(this.firmInfo.FirmId, this.convertTask.TaskId);
+				if (p == 0)
+					inttime = convertTask.ConvertSql.Start;
+				else
+					inttime = p;
+
+				first = false;
+				LogHelper.getLogger().debug("任务：" + convertTask.TaskId + " 初次访问，@@inttime设置为start的值");
+			} else {
+				// 全量时间大于0，同时达到间隔分钟数
+				if (convertTask.ConvertSql.ResetIntervalMinute > 0//
+						&& lastTime + convertTask.ConvertSql.ResetIntervalMinute * 60 * 1000 < new Date().getTime()) {
+					inttime = 0;// 重置
+					lastTime=new Date().getTime();
+					LogHelper.getLogger().debug("任务：" + convertTask.TaskId + " 到达了重置时间，@@inttime重置为0");
+				}
+			}
+
+			String sql = convertTask.ConvertSql.Sql.replaceAll("@@inttime", inttime + "");// sql
+			int res = executeDb(sql);
+			if (res > 0) {
+				inttime = res;
+				ProcessTask.saveProValue(new TaskPro(this.firmInfo.FirmId, this.convertTask.TaskId, res));
+			}
+		} catch (Exception e) {
+			LogHelper.getLogger().error("任务:" + convertTask.TaskId + " 出现无法识别的异常", e);
 		}
 
 	}
@@ -125,16 +135,8 @@ public class DBProcess extends Thread {
 		return map.get("maxTime");
 	}
 
-	private void wait(int second) throws InterruptedException {
-		int i = 0;
-		while (i < second && started) {
-			Thread.sleep(1000);
-			i++;
-		}
-	}
-
 	public void finish() {
-		started = false;
+		service.shutdown();
 	}
 
 }

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,6 +43,7 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 
 	private KafkaAction kafkaAction;
 	private boolean isRunning;
+	ScheduledExecutorService service;
 
 	/**
 	 * 存放topic和数据的集合，超过5000条就处理
@@ -81,24 +83,17 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 	@Override
 	public void run() {
 		isRunning = true;
-		// 开辟子线程定时去执行写入数据
-		Thread t = new Thread() {
+		Runnable runnable = new Runnable() {
 			public void run() {
-				int i = 0;
-				while (isRunning) {
-					try {
-						if (i > 180) {//3分钟写一次
-							DealData();
-							i = 0;
-						}
-						Thread.sleep(1000);
-						i++;
-					} catch (Exception e) {
-					}
+				try {
+					DealData();
+				} catch (Exception e) {
 				}
 			}
 		};
-		t.start();
+		service = Executors.newSingleThreadScheduledExecutor();
+		// 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
+		service.scheduleAtFixedRate(runnable, 180, 180, TimeUnit.SECONDS);
 
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(100);
@@ -138,7 +133,7 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 							content = title + "\r\n" + content;
 							kafkaAction.RecevieMsg(content, topic);
 						} else {
-							// 大于5000条，分页							
+							// 大于5000条，分页
 							int pageSize = dicData.get(topic).size() / pageCount;
 							if (dicData.get(topic).size() % pageCount > 0) {
 								pageSize += 1;
@@ -184,6 +179,10 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 			}
 		}
 
+		// 3.关闭定时器
+		if(service!=null){
+			service.shutdown();
+		}
 	}
 
 }

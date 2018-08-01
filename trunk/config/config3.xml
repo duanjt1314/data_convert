@@ -19,11 +19,8 @@
 	</appSetting>
 	
 	<db>
-		<!-- mysql/oracle/sqlserver -->
-		<dbType>mysql</dbType>
-		<ip>192.168.23.79</ip>
-		<port>3306</port>
-		<serviceName>bocai</serviceName>
+		<driver>com.mysql.jdbc.Driver</driver>
+		<url>jdbc:mysql://192.168.23.79:3306/bocai</url>
 		<userName>bocai</userName>
 		<password>123456</password>
 	</db>
@@ -36,11 +33,8 @@
 			终端特征 ，bocai-logs-terminallog-145
 			存在FileType就表示从文件读取
 			-->
-			<task id="0001" topic="bocai-logs-terminallog-145" fileType="gz">				
-				<!-- 配置从文件中读取的匹配模式 -->
-				<searchPattern>
-					<item>*WifiTerminalInfoLog*</item>
-				</searchPattern>
+			<task id="0001" topic="" fileType="" dbAble="true">				
+				
 				<!-- 索引文件配置 -->
 				<indexPath>/config/firms/wz/WA_SOURCE_FJ_0001/WA_SOURCE_FJ_0001.xml</indexPath>
 				<indexName>GAB_ZIP_INDEX.xml</indexName>
@@ -58,26 +52,14 @@
 				<siteIdName>t_site_id</siteIdName>
 				<deviceIdName>t_device_id</deviceIdName>
 				<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
+				
+  				<sql keyName="update_time" start="0" resetIntervalMinute="2">
+  					<![CDATA[select * from app_info a where 
+  					update_time>@@inttime
+  					order by update_time asc]]>
+  				</sql>
 			</task>
-			<!-- 上网日志 bocai-logs-netlog-145 -->
-			<task id="0002" topic="">
-				<!-- 索引文件配置 -->
-				<indexPath>/config/firms/wz/WA_SOURCE_FJ_0002/WA_SOURCE_FJ_0002.xml</indexPath>
-				<indexName>GAB_ZIP_INDEX.xml</indexName>
-				<!-- 数据文件配置 -->
-				<dataPath>/config/firms/wz/WA_SOURCE_FJ_0002/list.xml</dataPath>
-				<dataName>145-440100-@@timeint-@@sequence5-WA_SOURCE_0002-0.bcp</dataName>
-				<!-- 压缩文件名称 -->
-				<zipName>145-765941742-511100-440100-@@timeint-@@sequence5.zip</zipName>
-				<!-- 数据文件类型,json、xml、zbf(制表符) -->
-				<dataType>zbf</dataType>
-				<!-- 是否按区域上报,默认为false。default表示不能按区域上报的数据默认区域编码 -->
-				<regionReport default="500000">0</regionReport>
-				<!-- 是否压缩，默认要压缩 -->
-				<hasCompress>false</hasCompress>
-				<!-- 是否包含所有文件 -->
-				<hasIndex>false</hasIndex>
-			</task>
+			
 		</firm>
 	</firms>
 </config>
