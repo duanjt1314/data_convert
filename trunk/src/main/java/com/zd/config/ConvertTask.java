@@ -41,7 +41,7 @@ public class ConvertTask {
 	/**
 	 * 筛选条件
 	 */
-	public Map<String, String> Filter;
+	public Map<String,List<ConvertFilter>> Filter;
 	/**
 	 * 转换列的集合
 	 */

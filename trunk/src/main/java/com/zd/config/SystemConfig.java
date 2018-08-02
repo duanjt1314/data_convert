@@ -9,6 +9,7 @@ import java.util.Map;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 
+import com.zd.config.model.FilterType;
 import com.zd.util.Helper;
 import com.zd.util.LogHelper;
 
@@ -241,10 +242,21 @@ public class SystemConfig {
 		}
 		// fillter
 		if (element.element("filter") != null) {
-			task.Filter = new HashMap<String, String>();
+			task.Filter = new HashMap<String, List<ConvertFilter>>();
 			for (Object obj : element.element("filter").elements("item")) {
 				Element item = (Element) obj;
-				task.Filter.put(item.attribute("key").getText(), item.attribute("value").getText());
+				String key = XmlUtil.GetXmlAttr(item, "key").getText().toUpperCase();
+				String type = XmlUtil.GetXmlAttr(item, "type", "VALUE").toUpperCase();
+				String value = XmlUtil.GetXmlAttr(item, "value", "");
+
+				ConvertFilter filter = new ConvertFilter(key, value, FilterType.valueOf(type));
+				if (task.Filter.containsKey(key)) {
+					task.Filter.get(key).add(filter);
+				} else {
+					List<ConvertFilter> fs = new ArrayList<ConvertFilter>();
+					fs.add(filter);
+					task.Filter.put(key, fs);
+				}
 			}
 		}
 		// regionReport
@@ -273,19 +285,19 @@ public class SystemConfig {
 		if (task.ConvertColumns.size() == 0) {
 			LogHelper.getLogger().error("任务:" + task.TaskId + ",转换列为空，也许是list.xml中的column没有配置");
 		}
-		
-		//解析数据库转换相关配置（主要用于基础数据的转换）
-		if(task.DbAble){
-			Element sqlEle=element.element("sql");
-			if(sqlEle==null){
+
+		// 解析数据库转换相关配置（主要用于基础数据的转换）
+		if (task.DbAble) {
+			Element sqlEle = element.element("sql");
+			if (sqlEle == null) {
 				LogHelper.getLogger().error("任务:" + task.TaskId + "配置的DbAble为true，但是却没有配置sql节点");
-				task.DbAble=false;
-			}else{
-				task.ConvertSql=new ConvertSql();
-				task.ConvertSql.Sql=sqlEle.getText();
-				task.ConvertSql.KeyName=sqlEle.attribute("keyName").getText();
-				task.ConvertSql.Start=XmlUtil.GetXmlAttr(sqlEle, "start", 0);
-				task.ConvertSql.ResetIntervalMinute=XmlUtil.GetXmlAttr(sqlEle, "resetIntervalMinute", 0);
+				task.DbAble = false;
+			} else {
+				task.ConvertSql = new ConvertSql();
+				task.ConvertSql.Sql = sqlEle.getText();
+				task.ConvertSql.KeyName = sqlEle.attribute("keyName").getText();
+				task.ConvertSql.Start = XmlUtil.GetXmlAttr(sqlEle, "start", 0);
+				task.ConvertSql.ResetIntervalMinute = XmlUtil.GetXmlAttr(sqlEle, "resetIntervalMinute", 0);
 			}
 		}
 

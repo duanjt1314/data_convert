@@ -3,10 +3,12 @@ package com.zd.convert;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import com.zd.config.ConvertColumn;
+import com.zd.config.ConvertFilter;
 import com.zd.config.ConvertFirm;
 import com.zd.config.ConvertTask;
 import com.zd.config.SystemConfig;
@@ -151,17 +153,45 @@ public class FileConvert {
 	 * @return
 	 */
 	private DataTable FilterData(DataTable dt) {
+		if (dt.isNullOrEmpty()) {
+			return dt;
+		}
+
+		String[] columns = dt.getColumns();
+
 		if (ConvertTask.Filter != null && ConvertTask.Filter.size() > 0) {
-			DataTable result = new DataTable();
+			DataTable result = new DataTable();// 定义返回集合
 			for (DataRow row : dt) {
 				boolean isAdd = true;// 是否新增
-				for (String key : ConvertTask.Filter.keySet()) {
-					if (!row.get(key).toString().equals(ConvertTask.Filter.get(key))) {
-						// 不提取
-						isAdd = false;
-						break;
+
+				for (String col : columns) {
+					if (ConvertTask.Filter.containsKey(col)) {
+						for (ConvertFilter filter : ConvertTask.Filter.get(col)) {
+							// 不满足条件的就不需要新增
+							switch (filter.getType()) {
+							case VALUE: {
+								if (!row.get(col).toString().equals(filter.getValue())) {
+									isAdd = false;
+								}
+								break;
+							}
+							case NOTVALUE: {
+								if (row.get(col).toString().equals(filter.getValue())) {
+									isAdd = false;
+								}
+								break;
+							}
+							case EXP: {
+								if (!Pattern.matches(filter.getValue(), row.get(col).toString())) {
+									isAdd = false;
+								}
+								break;
+							}
+							}
+						}
 					}
 				}
+
 				if (isAdd) {
 					result.add(row);
 				}
@@ -291,7 +321,7 @@ public class FileConvert {
 				file.mkdirs();// 创建目录
 
 			String dataFileName = FileNameReplace(ConvertTask.DataName, "", list.size() + "", regionId);
-			
+
 			boolean res = true;
 			if (ConvertTask.HasIndex) {
 				String indexFileContent = FileUtil.ReadAllString(PathUtil.Combine(Helper.GetAppDir(), ConvertTask.IndexPath));
