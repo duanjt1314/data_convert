@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import com.zd.config.ConvertColumn;
 import com.zd.config.ConvertFilter;
 import com.zd.config.ConvertFirm;
@@ -165,30 +166,38 @@ public class FileConvert {
 				boolean isAdd = true;// 是否新增
 
 				for (String col : columns) {
-					if (ConvertTask.Filter.containsKey(col)) {
-						for (ConvertFilter filter : ConvertTask.Filter.get(col)) {
-							// 不满足条件的就不需要新增
-							switch (filter.getType()) {
-							case VALUE: {
-								if (!row.get(col).toString().equals(filter.getValue())) {
-									isAdd = false;
+					try {
+						if (ConvertTask.Filter.containsKey(col)) {
+							for (ConvertFilter filter : ConvertTask.Filter.get(col)) {
+								// 不满足条件的就不需要新增
+								switch (filter.getType()) {
+								case VALUE: {
+									if (!row.get(col).toString().equals(filter.getValue())) {
+										isAdd = false;
+									}
+									break;
 								}
-								break;
-							}
-							case NOTVALUE: {
-								if (row.get(col).toString().equals(filter.getValue())) {
-									isAdd = false;
+								case NOTVALUE: {
+									if (row.get(col).toString().equals(filter.getValue())) {
+										isAdd = false;
+									}
+									break;
 								}
-								break;
-							}
-							case EXP: {
-								if (!Pattern.matches(filter.getValue(), row.get(col).toString())) {
-									isAdd = false;
+								case EXP: {
+									if (!Pattern.matches(filter.getValue(), row.get(col).toString())) {
+										isAdd = false;
+									}
+									break;
 								}
-								break;
+								}
 							}
-							}
+
 						}
+					} catch (Exception ex) {
+						String errMsg="清理数据异常,\r\ndata:"+new Gson().toJson(row)//
+								+"\r\nclear:"+new Gson().toJson(ConvertTask.Filter);
+						LogHelper.getLogger().error(errMsg, ex);
+						isAdd=false;
 					}
 				}
 
