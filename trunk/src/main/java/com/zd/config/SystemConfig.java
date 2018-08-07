@@ -37,7 +37,7 @@ public class SystemConfig {
 	/**
 	 * 文件来源目录
 	 */
-	public static String SourceDir = Helper.GetAppDir() + File.separator + "log";
+	public static String SourceDir ="";
 
 	/**
 	 * 文件输出目录

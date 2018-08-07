@@ -25,18 +25,18 @@ import cn.zdsoft.common.StringUtil;
 public class StartUp extends Thread {
 	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
 	private FileScan fileScan = new FileScan();
-	private List<DBProcess> dBPros=new ArrayList<DBProcess>();
+	private List<DBProcess> dBPros = new ArrayList<DBProcess>();
 
 	@Override
 	public void run() {
 		KafkaListen();
 		new Thread(fileScan).start();
-		
-		//数据库
+
+		// 数据库
 		for (ConvertFirm firm : SystemConfig.ConvertFirms) {
 			for (ConvertTask task : firm.Tasks) {
-				if(task.DbAble){
-					DBProcess dbProcess=new DBProcess(task, firm);
+				if (task.DbAble) {
+					DBProcess dbProcess = new DBProcess(task, firm);
 					dbProcess.start();
 					dBPros.add(dbProcess);
 				}
@@ -70,7 +70,8 @@ public class StartUp extends Thread {
 							try {
 								String convertId = UUID.randomUUID().toString();
 								LogHelper.getLogger()
-										.debug("接收到数据:" + System.lineSeparator()//
+										.debug("接收到数据(TOPIC:" + topic + "):"//
+												+ System.lineSeparator()//
 												+ "转换唯一编码:" + convertId + System.lineSeparator()//
 												+ msg + System.lineSeparator()//
 								);

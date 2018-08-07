@@ -88,12 +88,13 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 				try {
 					DealData();
 				} catch (Exception e) {
+					LogHelper.getLogger().error("", e);
 				}
 			}
 		};
 		service = Executors.newSingleThreadScheduledExecutor();
-		// 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-		service.scheduleAtFixedRate(runnable, 180, 180, TimeUnit.SECONDS);
+		// 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间,180
+		service.scheduleAtFixedRate(runnable, 30, 30, TimeUnit.SECONDS);
 
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(100);
@@ -110,6 +111,10 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 							}
 							ls.add(record.value());
 							dicData.put(record.topic(), ls);
+							if (ls.size() >= 5000) {
+								DealData(record.topic());
+								dicData.put(record.topic(),new ArrayList<String>());
+							}
 						}
 					} else {
 						LogHelper.getLogger().warn("从消息队列拉取的消息为空，topic:" + record.topic());
@@ -149,10 +154,31 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 						LogHelper.getLogger().error("topic:" + topic + " 在数据库表config_datasource中未找到对应的数据");
 					}
 
-					dicData.remove(topic);
+					dicData.put(topic,new ArrayList<String>());
 				}
 			}
 		}
+	}
+
+	/**
+	 * 根据topic取出5000条数据进行处理
+	 * @param topic
+	 */
+	private void DealData(String topic) {
+		try {
+			String title = TableTitle.getTitle(topic);
+			if (!title.equals("")) {
+				List<String> arr = dicData.get(topic).stream().limit(5000).collect(Collectors.toList());
+				String content = StringUtils.join(arr, "\r\n");
+				content = title + "\r\n" + content;
+				kafkaAction.RecevieMsg(content, topic);
+			} else {
+				LogHelper.getLogger().error("topic:" + topic + " 在数据库表config_datasource中未找到对应的数据");
+			}
+		} catch (Exception ex) {
+			LogHelper.getLogger().error("topic:" + topic + " 达到5000条数据处理失败", ex);
+		}
+
 	}
 
 	public void shutdown() {
@@ -180,7 +206,7 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 		}
 
 		// 3.关闭定时器
-		if(service!=null){
+		if (service != null) {
 			service.shutdown();
 		}
 	}
