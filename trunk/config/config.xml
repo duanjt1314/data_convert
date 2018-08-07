@@ -33,7 +33,7 @@
 			终端特征 ，bocai-logs-terminallog-145
 			存在FileType就表示从文件读取
 			-->
-			<task id="0001" topic="bocai-logs-terminallog-142" fileType="gz">				
+			<task id="0001" topic="bocai-logs-terminallog-145" fileType="gz">				
 				<!-- 配置从文件中读取的匹配模式 -->
 				<searchPattern>
 					<item>*WifiTerminalInfoLog*</item>
@@ -56,7 +56,7 @@
 				<deviceIdName>t_device_id</deviceIdName>
 				<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
 			</task>
-			<task id="0001" topic="bocai-logs-terminallog-141" fileType="gz">				
+			<task id="0001" topic="bocai-logs-terminallog-146" fileType="gz">				
 				<!-- 配置从文件中读取的匹配模式 -->
 				<searchPattern>
 					<item>*WifiTerminalInfoLog*</item>
