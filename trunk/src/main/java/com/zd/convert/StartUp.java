@@ -63,7 +63,7 @@ public class StartUp extends Thread {
 
 				if (topics.size() > 0) {
 
-					javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "zdkafka", new KafkaAction() {
+					javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "data_convert", new KafkaAction() {
 
 						@Override
 						public void RecevieMsg(String msg, String topic) {
