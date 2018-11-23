@@ -1,10 +1,14 @@
 作者:段江涛
 版本:1.4.4
-时间:2018-11-12
+时间:2018-11-23
 修改内容:
-	1.将kafka的groupId由之前的zdkafka修改为data_convert
+	1.修改读取topic列头的方式，之前是从表config_datasource中获取，现在修改为先从数据库读取，如果没有读取到就从
+		config/topic-list.properties中读取
+	2.将kafka的groupId由之前的zdkafka修改为data_convert
 部署说明:
-	1.无
+	1.如果用到该功能，请在config文件夹下面增加topic-list.properties文件。
+		文件内容可用通过脚本：select CONCAT(`code`,'=',columns) from bdplatform.config_datasource where type='TOPIC'获取
+		文件的格式内容是topic=json串	
 备注:
 	1.
 --------------------------------------------------------------------
