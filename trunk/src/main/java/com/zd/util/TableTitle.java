@@ -24,7 +24,7 @@ public class TableTitle {
 
 	static {
 		try {
-			String sql = "select code,columns from config_datasource1 where type='TOPIC' ";
+			String sql = "select code,columns from config_datasource where type='TOPIC' ";
 			table = new DBAction(SystemConfig.DataBase).getData(sql);
 
 			if (table == null || table.size() == 0) {
