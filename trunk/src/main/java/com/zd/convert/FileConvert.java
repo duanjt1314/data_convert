@@ -194,10 +194,10 @@ public class FileConvert {
 
 						}
 					} catch (Exception ex) {
-						String errMsg="清理数据异常,\r\ndata:"+new Gson().toJson(row)//
-								+"\r\nclear:"+new Gson().toJson(ConvertTask.Filter);
+						String errMsg = "清理数据异常,\r\ndata:" + new Gson().toJson(row)//
+								+ "\r\nclear:" + new Gson().toJson(ConvertTask.Filter);
 						LogHelper.getLogger().error(errMsg, ex);
-						isAdd=false;
+						isAdd = false;
 					}
 				}
 
@@ -223,7 +223,7 @@ public class FileConvert {
 		for (DataRow map : list) {
 			DataRow row = new DataRow();
 			for (ConvertColumn convertColumn : ConvertTask.ConvertColumns) {
-				Object data = null;
+				Object data = "";
 				if (!StringUtil.IsNullOrEmpty(convertColumn.Formate)) {
 					// 格式化
 					try {
@@ -241,6 +241,12 @@ public class FileConvert {
 						data = convertColumn.DefaultValue;// 默认值
 					}
 				}
+
+				// 默认值赋值
+				if (!convertColumn.EnableNull && StringUtil.IsNullOrEmpty(data.toString())) {
+					data = convertColumn.DefaultValue;
+				}
+
 				row.put(convertColumn.Tofield, data);
 			}
 			result.add(row);

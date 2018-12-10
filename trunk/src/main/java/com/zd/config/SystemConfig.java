@@ -37,7 +37,7 @@ public class SystemConfig {
 	/**
 	 * 文件来源目录
 	 */
-	public static String SourceDir ="";
+	public static String SourceDir = "";
 
 	/**
 	 * 文件输出目录
@@ -357,6 +357,12 @@ public class SystemConfig {
 						column.Formate = ele.attribute("formate").getText();
 					else
 						LogHelper.getLogger().warn("节点:" + ele.getPath() + "缺少formate属性");
+
+					// enableNull
+					if (ele.attribute("enableNull") != null)
+						column.EnableNull = ele.attribute("enableNull").getText().equalsIgnoreCase("true") ? true : false;
+					else
+						column.EnableNull = true;
 
 					list.add(column);
 				}

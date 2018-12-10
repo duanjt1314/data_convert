@@ -53,28 +53,30 @@ public class TableTitle {
 	 * @return
 	 */
 	public static String getTitle(String topic) {
+		String columns = "";
 		if (config != null) {
-			return config.getString(topic);
+			columns = config.getString(topic);
 		} else {
 			for (int i = 0; i < table.size(); i++) {
 				if (table.get(i).get("code").equals(topic)) {
-					String cls = table.get(i).get("columns").toString();
-					Type type = new TypeToken<List<Map>>() {
-					}.getType();
-					List<Map> list = new Gson().fromJson(cls, type);
-
-					String result = "";
-					for (Map map : list) {
-						if (result.equals("")) {
-							result += map.get("column").toString();
-						} else {
-							result += "\t" + map.get("column").toString();
-						}
-					}
-					return result;
+					columns = table.get(i).get("columns").toString();
+					break;
 				}
 			}
 		}
-		return "";
+
+		Type type = new TypeToken<List<Map>>() {
+		}.getType();
+		List<Map> list = new Gson().fromJson(columns, type);
+
+		String result = "";
+		for (Map map : list) {
+			if (result.equals("")) {
+				result += map.get("column").toString();
+			} else {
+				result += "\t" + map.get("column").toString();
+			}
+		}
+		return result;
 	}
 }

@@ -177,7 +177,7 @@ public class DataFormat {
 	 * @param ipaddr
 	 * @return
 	 */
-	private static String getIP(long ipaddr) {
+	public static String getIP(long ipaddr) {
 		long y = ipaddr % 256;
 		long m = (ipaddr - y) / (256 * 256 * 256);
 		long n = (ipaddr - 256 * 256 * 256 * m - y) / (256 * 256);

@@ -15,5 +15,11 @@ public class DataFormatTest {
 		String str= DataFormat.Format(null, row, "substring(row[NETBAR_CODE],7,1)");
 		System.out.println(str);
 	}
+	
+	@Test
+	public void testGetIP() {
+		String str= DataFormat.getIP(2067077380);
+		System.out.println(str);
+	}
 
 }
