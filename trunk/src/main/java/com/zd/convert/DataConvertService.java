@@ -5,7 +5,7 @@ import java.io.IOException;
 import com.zd.util.LogHelper;
 
 public class DataConvertService {
-	private static String VERSION = "1.4.4";
+	private static String VERSION = "1.4.5";
 
 	/**
 	 * 程序启动入口,默认配置文件需在jar包同级
