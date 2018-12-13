@@ -6,8 +6,11 @@
 		<!--2认证帐号-->
 		<column  key="2"  chn="" formate=""  tofield="AUTH_ACCOUNT"        fromfield="source_market"  defaultValue="123456"   ></column>
 		<!--3上网服务场所编码-->
-		<column  key="3"  chn="" formate=""  tofield="NETBAR_WACODE" fromfield="app_id" defaultValue=""  ></column>
+		<column  key="3"  chn="" formate=""  tofield="NETBAR_WACODE" fromfield="netbar_wacode" defaultValue=""  ></column>
 		<!--3上网服务场所编码-->
 		<column  key="4"  chn="" formate=""  tofield="src_ip" fromfield="src_ip" defaultValue=""  ></column>		
+		
+		<column  key="5"  chn="" formate=""  tofield="src_ip2" fromfield="registered_address" defaultValue="A"  ></column>
+		<column  key="6"  chn="" formate=""  tofield="src_ip3" fromfield="registered_address" defaultValue="A" enableNull="false"  ></column>
 	</columns>
 </config>

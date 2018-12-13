@@ -158,7 +158,7 @@ public class DataFormat {
 	 * @param ip
 	 * @return
 	 */
-	private static long ipToLong(String ip) {
+	public static long ipToLong(String ip) {
 		if (StringUtil.IsNullOrEmpty(ip)) {
 			return 0;
 		}

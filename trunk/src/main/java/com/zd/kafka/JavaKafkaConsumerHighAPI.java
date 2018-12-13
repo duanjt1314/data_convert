@@ -94,7 +94,7 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 		};
 		service = Executors.newSingleThreadScheduledExecutor();
 		// 第二个参数为首次执行的延时时间，第三个参数为定时执行的间隔时间
-		service.scheduleAtFixedRate(runnable, 30, 30, TimeUnit.SECONDS);
+		service.scheduleAtFixedRate(runnable, 180, 180, TimeUnit.SECONDS);
 
 		while (true) {
 			ConsumerRecords<String, String> records = consumer.poll(100);

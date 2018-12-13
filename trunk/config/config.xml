@@ -24,16 +24,32 @@
 		<userName>bocai</userName>
 		<password>123456</password>
 	</db>
+	
+	<es>
+		<hosts>
+			<host ip="192.168.23.76" port="9300"></host>
+			<host ip="192.168.23.77" port="9300"></host>
+			<host ip="192.168.23.78" port="9300"></host>
+		</hosts>
+		<user>elastic</user>
+		<password>Zdopt1qaz@WSX</password>
+		<!-- 其它的设置 -->
+		<settings>
+			<setting key="xpack.security.transport.ssl.enabled" val="false"></setting>
+			<setting key="client.transport.sniff" val="true"></setting>
+			<setting key="cluster.name" val="es52"></setting>
+		</settings>
+	</es>
 
 	<!-- 厂商任务配置 -->
 	<firms>
 		<!-- id:厂商编码 name:厂商名称 convertDic:厂商字典格式化地址,可为空 -->
 		<firm id="wz" name="烽火" convertDic="/config/firms/wz/convertDic.xml">		
 			<!-- 
-			终端特征 ，bocai-logs-terminallog-145
+			终端上下网 ，bocai-logs-customeractive-145
 			存在FileType就表示从文件读取
 			-->
-			<task id="0001" topic="bocai-logs-customeractive-145" fileType="gz">				
+			<task id="0001" topic="" fileType="gz">				
 				<!-- 配置从文件中读取的匹配模式 -->
 				<searchPattern>
 					<item>*WifiTerminalInfoLog*</item>
@@ -100,4 +116,6 @@
 			</task>
 		</firm>
 	</firms>
+	<!-- 引用其它配置文件，不用将配置文件揉到一起 -->
+	<import src="/config/es-config.xml"/>
 </config>

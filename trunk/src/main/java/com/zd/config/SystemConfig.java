@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
@@ -59,6 +60,7 @@ public class SystemConfig {
 	 * 数据库访问配置
 	 */
 	public static DataBase DataBase = null;
+	public static ElasticSearch Elastic = null;
 	public static String TransTopic = "bocai-logs-translog";
 
 	/**
@@ -81,6 +83,17 @@ public class SystemConfig {
 			}
 			if (root.element("db") != null) {// 数据库配置
 				analysisDB(root.element("db"));
+			}
+			if (root.element("es") != null) {
+				analysisES(root.element("es"));
+			}
+			if (root.elements("import").size() > 0) {
+				for (Object obj : root.elements("import")) {
+					Element ele = (Element) obj;
+					String src = ele.attribute("src").getText();
+					String path = PathUtil.Combine(Helper.GetAppDir(), src);
+					analysisImport(path);
+				}
 			}
 
 			// 打印日志,显示读取结果
@@ -128,6 +141,54 @@ public class SystemConfig {
 		DataBase.setUrl(element.element("url").getText());
 		DataBase.setUserName(element.element("userName").getText());
 		DataBase.setPassword(element.element("password").getText());
+	}
+
+	/**
+	 * 解析数据配置
+	 * @param element	将传入xml节点 config/es
+	 */
+	private static void analysisES(Element element) {
+		Elastic = new ElasticSearch();
+		// 解析帐号密码
+		Elastic.setUser(element.element("user").getText());
+		Elastic.setPassword(element.element("password").getText());
+		// 解析host主机
+		if (element.element("hosts") != null) {
+			List eleHosts = element.element("hosts").elements("host");
+			if (eleHosts.size() == 0) {
+				LogHelper.logger.error("ES解析，节点config/es/hosts下未找到host节点");
+			} else {
+				List<ElasticSearch.Host> hs = new ArrayList<ElasticSearch.Host>();
+				for (Object objHost : eleHosts) {
+					Element eleHost = (Element) objHost;
+					ElasticSearch.Host host = Elastic.newHost();
+					host.setIp(eleHost.attribute("ip").getText());
+					host.setPort(XmlUtil.GetXmlAttr(eleHost, "port", 9300));
+					hs.add(host);
+				}
+				Elastic.setHosts(hs);
+			}
+		} else {
+			LogHelper.logger.error("ES解析，未找到节点config/es/hosts");
+		}
+		// 解析设置
+		if (element.element("settings") != null) {
+			List eleSettings = element.element("settings").elements("setting");
+			if (eleSettings.size() == 0) {
+				LogHelper.logger.warn("ES解析，节点config/es/settings下未找到setting节点");
+			} else {
+				List<ElasticSearch.Setting> settings = new ArrayList<ElasticSearch.Setting>();
+				for (Object obj : eleSettings) {
+					Element eleSetting = (Element) obj;
+					ElasticSearch.Setting setting = Elastic.newSetting();
+					setting.setKey(eleSetting.attribute("key").getText());
+					setting.setVal(eleSetting.attribute("val").getText());
+					settings.add(setting);
+				}
+				Elastic.setSettings(settings);
+			}
+		}
+
 	}
 
 	/**
@@ -419,5 +480,48 @@ public class SystemConfig {
 			LogHelper.getLogger().error("加载xml配置:" + url + " 失败", e);
 			throw e;
 		}
+	}
+
+	/**
+	 * 解析import配置
+	 * @param url
+	 */
+	private static void analysisImport(String url) {
+		LogHelper.getLogger().info("准备解析配置文件:" + url);
+		File file = new File(url);
+		if (!(file.isFile() && file.exists())) {
+			throw new RuntimeException("文件:[" + url + "]不存在,绝对路径:" + file.getAbsolutePath());
+		}
+		try {
+			SAXReader reader = new SAXReader();
+			Document document = reader.read(file);
+			Element root = document.getRootElement();
+
+			if (root.element("firms") != null) {
+				for (Object obj : root.element("firms").elements("firm")) {
+					Element ele = (Element) obj;
+					ConvertFirm cFirm = analysisFirm(ele);
+
+					// 将结果加入到全局配置
+					List<ConvertFirm> firms = ConvertFirms.stream().filter(f -> f.FirmId.equals(cFirm.FirmId)).collect(Collectors.toList());
+					if (firms.size() == 0) {
+						// 不存在的厂商，直接加入
+						ConvertFirms.add(cFirm);
+					} else {
+						ConvertFirm firm = firms.get(0);
+						for (ConvertTask task : cFirm.Tasks) {
+							if (firm.Tasks.stream().filter(f -> f.TaskId.equals(task.TaskId)).count() == 0) {
+								firm.Tasks.add(task);
+							} else {
+								LogHelper.logger.error("任务编号:" + task.TaskId + " 重复");
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			LogHelper.logger.error("解析文件失败:" + url);
+		}
+
 	}
 }
