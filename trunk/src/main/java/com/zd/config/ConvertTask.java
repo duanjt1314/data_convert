@@ -76,6 +76,10 @@ public class ConvertTask {
 	 */
 	public boolean DbAble = false;
 	/**
+	 * 是否访问ES
+	 */
+	public boolean EsAble=false;
+	/**
 	 * 数据库转换相关配置
 	 */
 	public ConvertSql ConvertSql;
@@ -84,6 +88,11 @@ public class ConvertTask {
 	 * 需要解析的文件名内容。只要文件名里面包含了该内容就会被解析
 	 */
 	public List<String> SearchPatterns = new ArrayList<String>();
+	
+	/**
+	 * ES相关配置
+	 */
+	public ConvertElastic ConvertElastic;
 
 	// 下面是用于数据保障的三列配置
 	public String SiteIdName = "";

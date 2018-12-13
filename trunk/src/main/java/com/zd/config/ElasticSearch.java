@@ -3,7 +3,7 @@ package com.zd.config;
 import java.util.List;
 
 /**
- * ES对象
+ * ES对象连接基础配置
  * @author 段江涛
  * @date 2018-12-13
  */

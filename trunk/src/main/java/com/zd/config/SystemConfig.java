@@ -335,6 +335,7 @@ public class SystemConfig {
 		task.HasCompress = XmlUtil.GetXmlElement(element, "hasCompress", true);
 		task.HasIndex = XmlUtil.GetXmlElement(element, "hasIndex", true);
 		task.DbAble = XmlUtil.GetXmlAttr(element, "dbAble", false);
+		task.EsAble = XmlUtil.GetXmlAttr(element, "esAble", false);
 
 		// 解析转换列的集合
 		File dataFile = new File(task.DataPath);
@@ -362,6 +363,35 @@ public class SystemConfig {
 			}
 		}
 
+		// 解析ES相关配置（主要用于从ES中读取数据转换）
+		if (task.EsAble) {
+			Element elasticEle = element.element("elastic");
+			if (elasticEle == null) {
+				LogHelper.getLogger().error("任务:" + task.TaskId + "配置的EsAble为true，但是却没有配置elastic节点");
+				task.DbAble = false;
+			} else {
+				task.ConvertElastic = new ConvertElastic();
+				task.ConvertElastic.setIndex(elasticEle.attribute("index").getText());
+				task.ConvertElastic.setType(XmlUtil.GetXmlAttr(elasticEle, "type", "logs"));
+				task.ConvertElastic.setSplitType(XmlUtil.GetXmlAttr(elasticEle, "splitType", "day"));
+				task.ConvertElastic.setKeyName(XmlUtil.GetXmlAttr(elasticEle, "keyName").getText());
+				task.ConvertElastic.setMinTime(XmlUtil.GetXmlAttr(elasticEle, "minTime", 0));
+				task.ConvertElastic.setMaxTime(Long.parseLong(XmlUtil.GetXmlAttr(elasticEle, "maxTime").getText()));
+
+				List<ConvertElastic.Filter> filters = new ArrayList<ConvertElastic.Filter>();// task.ConvertElastic.newFilter();
+				if (elasticEle.element("filter") != null) {
+					for (Object obj : elasticEle.element("filter").elements("item")) {
+						ConvertElastic.Filter filter = task.ConvertElastic.newFilter();
+						Element eleItem = (Element) obj;
+						filter.setCol(XmlUtil.GetXmlAttr(eleItem, "col").getText());
+						filter.setVal(XmlUtil.GetXmlAttr(eleItem, "val").getText());
+						filters.add(filter);
+					}
+				}
+				task.ConvertElastic.setFilter(filters);
+
+			}
+		}
 		return task;
 
 	}
@@ -520,7 +550,7 @@ public class SystemConfig {
 				}
 			}
 		} catch (Exception e) {
-			LogHelper.logger.error("解析文件失败:" + url);
+			LogHelper.logger.error("解析文件失败:" + url, e);
 		}
 
 	}

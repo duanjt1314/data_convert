@@ -72,7 +72,7 @@
 				<deviceIdName>t_device_id</deviceIdName>
 				<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
 			</task>
-			<task id="0001" topic="" fileType="gz">				
+			<task id="0002" topic="" fileType="gz">				
 				<!-- 配置从文件中读取的匹配模式 -->
 				<searchPattern>
 					<item>*WifiTerminalInfoLog*</item>
@@ -96,7 +96,7 @@
 				<sourceSiteIdName>t_source_site_id</sourceSiteIdName>
 			</task>
 			<!-- 上网日志 bocai-logs-netlog-145 -->
-			<task id="0002" topic="">
+			<task id="0003" topic="">
 				<!-- 索引文件配置 -->
 				<indexPath>/config/firms/wz/WA_SOURCE_FJ_0002/WA_SOURCE_FJ_0002.xml</indexPath>
 				<indexName>GAB_ZIP_INDEX.xml</indexName>
