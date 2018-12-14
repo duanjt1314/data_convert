@@ -1,11 +1,16 @@
 作者:段江涛
 版本:1.5.0
-时间:2018-12-13
+时间:2018-12-14
 修改内容:
 	1.增加从ElasticSearch读取数据并转换
 	2.新增import命令节点，可通过一个xml引入另一个xml的配置.import只会解析firm的相关配置
 部署说明:
-	1.
+	1.关于import，在config.xml的config节点下：
+		<import src="/config/es-config.xml"/>
+	2.关于增加从ElasticSearch读取数据并转换
+		1)需要在config.xml的config节点下创建es节点，用于设置ES服务器的相关信息，详见《配置文档》
+		2)需要读取ES的task需要设置属性esAble=true
+		3)task节点下需要设置elastic节点，用于表示需要导出的索引、类型等信息，详见《配置文档》
 备注:
 	1.
 --------------------------------------------------------------------

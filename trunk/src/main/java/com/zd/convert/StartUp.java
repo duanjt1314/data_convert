@@ -9,6 +9,7 @@ import com.zd.config.ConvertFirm;
 import com.zd.config.ConvertTask;
 import com.zd.config.SystemConfig;
 import com.zd.kafka.DBProcess;
+import com.zd.kafka.ESProcess;
 import com.zd.kafka.FileScan;
 import com.zd.kafka.JavaKafkaConsumerHighAPI;
 import com.zd.kafka.KafkaAction;
@@ -26,6 +27,7 @@ public class StartUp extends Thread {
 	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
 	private FileScan fileScan = new FileScan();
 	private List<DBProcess> dBPros = new ArrayList<DBProcess>();
+	private List<ESProcess> esPros = new ArrayList<ESProcess>();
 
 	@Override
 	public void run() {
@@ -39,6 +41,10 @@ public class StartUp extends Thread {
 					DBProcess dbProcess = new DBProcess(task, firm);
 					dbProcess.start();
 					dBPros.add(dbProcess);
+				} else if (task.EsAble) {
+					ESProcess esProcess = new ESProcess(task, firm);
+					esProcess.start();
+					esPros.add(esProcess);
 				}
 			}
 		}
@@ -112,6 +118,9 @@ public class StartUp extends Thread {
 		fileScan.stop();
 		for (DBProcess dbProcess : dBPros) {
 			dbProcess.finish();
+		}
+		for (ESProcess esProcess : esPros) {
+			esProcess.interrupt();//停止
 		}
 		LogHelper.getLogger().info("程序停止成功");
 	}

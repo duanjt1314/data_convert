@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<columns>
+		<!--1设备编码-->
+		<column  key="1"  chn="" formate=""  tofield="equipment_id"     fromfield="equipment_id"  defaultValue=""></column>
+		<!--2mac-->
+		<column  key="2"  chn="" formate=""  tofield="mac"        fromfield="mac" defaultValue=""   ></column>
+		<!--4logtime-->
+		<column  key="3"  chn="" formate=""  tofield="logtime" fromfield="logtime"  defaultValue=""  ></column>
+
+	</columns>
+</config>
