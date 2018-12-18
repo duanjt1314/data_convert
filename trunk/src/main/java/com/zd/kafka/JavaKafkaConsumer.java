@@ -15,9 +15,11 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.zd.util.LogHelper;
 import com.zd.util.TableTitle;
@@ -30,7 +32,7 @@ import cn.zdsoft.common.StringUtil;
  * @author Administrator
  *
  */
-public class JavaKafkaConsumerHighAPI implements Runnable {
+public class JavaKafkaConsumer implements Runnable {
 	/**
 	 * kafka消费者对象
 	 */
@@ -64,16 +66,13 @@ public class JavaKafkaConsumerHighAPI implements Runnable {
 	 * @param kafkaAction
 	 *            接收到消息后触发的方法
 	 */
-	public JavaKafkaConsumerHighAPI(List<String> topics, int numThreads, String zookeeper, String groupId, KafkaAction kafkaAction) {
+	public JavaKafkaConsumer(List<String> topics, int numThreads, String zookeeper, String groupId, KafkaAction kafkaAction) {
 		// 1. 创建Kafka连接器
 		Properties props = new Properties();
-		props.put("bootstrap.servers", zookeeper);// 服务器ip:端口号，集群用逗号分隔
-		props.put("group.id", groupId);
-		props.put("enable.auto.commit", "true");
-		props.put("auto.commit.interval.ms", "1000");
-		props.put("session.timeout.ms", "30000");
-		props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-		props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, zookeeper);// 服务器ip:端口号，集群用逗号分隔
+		props.put(ConsumerConfig.GROUP_ID_CONFIG,groupId);
+		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
+		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class);
 		consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(topics);
 

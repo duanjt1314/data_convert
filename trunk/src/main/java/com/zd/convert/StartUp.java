@@ -11,7 +11,7 @@ import com.zd.config.SystemConfig;
 import com.zd.kafka.DBProcess;
 import com.zd.kafka.ESProcess;
 import com.zd.kafka.FileScan;
-import com.zd.kafka.JavaKafkaConsumerHighAPI;
+import com.zd.kafka.JavaKafkaConsumer;
 import com.zd.kafka.KafkaAction;
 import com.zd.util.LogHelper;
 
@@ -24,7 +24,7 @@ import cn.zdsoft.common.StringUtil;
  *
  */
 public class StartUp extends Thread {
-	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
+	private JavaKafkaConsumer javaKafkaConsumer;
 	private FileScan fileScan = new FileScan();
 	private List<DBProcess> dBPros = new ArrayList<DBProcess>();
 	private List<ESProcess> esPros = new ArrayList<ESProcess>();
@@ -69,7 +69,7 @@ public class StartUp extends Thread {
 
 				if (topics.size() > 0) {
 
-					javaKafkaConsumer = new JavaKafkaConsumerHighAPI(topics, 1, SystemConfig.KafkaUrl, "data_convert", new KafkaAction() {
+					javaKafkaConsumer = new JavaKafkaConsumer(topics, 1, SystemConfig.KafkaUrl, "data_convert", new KafkaAction() {
 
 						@Override
 						public void RecevieMsg(String msg, String topic) {

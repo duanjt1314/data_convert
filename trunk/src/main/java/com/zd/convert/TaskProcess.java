@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.zd.config.ConvertFirm;
 import com.zd.config.ConvertTask;
-import com.zd.kafka.JavaKafkaConsumerHighAPI;
+import com.zd.kafka.JavaKafkaConsumer;
 import com.zd.kafka.KafkaAction;
 import com.zd.util.LogHelper;
 
@@ -22,7 +22,7 @@ public class TaskProcess {
 	 */
 	private ConvertFirm FirmInfo;
 
-	private JavaKafkaConsumerHighAPI javaKafkaConsumer;
+	private JavaKafkaConsumer javaKafkaConsumer;
 
 	/**
 	 * 初始化任务线程对象
