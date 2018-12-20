@@ -49,7 +49,7 @@
 			终端上下网 ，bocai-logs-customeractive-145
 			存在FileType就表示从文件读取
 			-->
-			<task id="0001" topic="bocai-logs-customeractive-145" fileType="gz">				
+			<task id="0001" topic="bocai-logs-terminallog-145" fileType="gz">				
 				<!-- 配置从文件中读取的匹配模式 -->
 				<searchPattern>
 					<item>*WifiTerminalInfoLog*</item>

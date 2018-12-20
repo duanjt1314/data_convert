@@ -1,4 +1,15 @@
 作者:段江涛
+版本:1.6.0
+时间:2018-12-20
+修改内容:
+	1.厂商下增加任务的部分节点配置，这样可以减少任务下面的重复配置
+		具体节点包含：hasIndex, indexPath, indexName, dataName, dataType, hasCompress, zipName, regionReport, siteIdName, deviceIdName, sourceSiteIdName
+部署说明:
+	1.
+备注:
+	1.
+--------------------------------------------------------------------
+作者:段江涛
 版本:1.5.0
 时间:2018-12-14
 修改内容:

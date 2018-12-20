@@ -231,7 +231,7 @@ public class SystemConfig {
 		firm.Tasks = new ArrayList<ConvertTask>();
 		List tasks = element.elements("task");
 		for (Object obj : tasks) {
-			firm.Tasks.add(analysisTask((Element) obj));
+			firm.Tasks.add(analysisTask((Element) obj, element));
 		}
 		// 字典配置
 		String dicUrl = element.attribute("convertDic").getText();
@@ -250,24 +250,20 @@ public class SystemConfig {
 	 * @return 一个任务对象
 	 * @throws Exception
 	 */
-	private static ConvertTask analysisTask(Element element) throws Exception {
+	private static ConvertTask analysisTask(Element element, Element firmElement) throws Exception {
 		ConvertTask task = new ConvertTask();
 		// id属性
-		if (element.attribute("id") == null) {
-			throw new Exception("节点config/firms/firm/task的属性id不存在,停止解析");
-		}
-		task.TaskId = element.attribute("id").getText();
+		task.TaskId = XmlUtil.GetXmlAttr(element, "id").getText();
 		// topic属性
-		if (element.attribute("topic") != null) {
-			task.Topic = element.attribute("topic").getText();
-		}
+		task.Topic = XmlUtil.GetXmlAttr(element, "topic", "");
 		// fileType属性
-		if (element.attribute("fileType") != null) {
-			task.FileType = element.attribute("fileType").getText();
-			if (task.FileType.indexOf('.') != 0) {
-				task.FileType = "." + task.FileType;// 让格式为：.gz
+		task.FileType = XmlUtil.GetXmlAttr(element, "fileType", "");
+		if (!StringUtil.IsNullOrEmpty(task.FileType)) {
+			if (!task.FileType.startsWith(".")) {
+				task.FileType = "." + task.FileType;
 			}
 		}
+
 		// 需要解析的文件类型
 		if (element.element("searchPattern") != null) {
 			List spList = element.element("searchPattern").elements("item");
@@ -278,10 +274,20 @@ public class SystemConfig {
 		// indexPath
 		if (element.element("indexPath") != null) {
 			task.IndexPath = element.element("indexPath").getText();
+		} else {
+			// 任务没有配置就从厂商节点下获取
+			if (firmElement.element("indexPath") != null) {
+				task.IndexPath = firmElement.element("indexPath").getText();
+			}
 		}
 		// indexName
 		if (element.element("indexName") != null) {
 			task.IndexName = element.element("indexName").getText();
+		} else {
+			// 任务没有配置就从厂商节点下获取
+			if (firmElement.element("indexName") != null) {
+				task.IndexName = firmElement.element("indexName").getText();
+			}
 		}
 		// dataPath
 		if (element.element("dataPath") == null) {
@@ -291,13 +297,15 @@ public class SystemConfig {
 		}
 		// dataName
 		if (element.element("dataName") == null) {
-			throw new Exception("节点config/firms/firm/dataName不存在,停止解析");
+			// 任务没有配置就从厂商节点下获取
+			task.DataName = XmlUtil.GetXmlElement(firmElement, "dataName").getText();
 		} else {
 			task.DataName = element.element("dataName").getText();
 		}
 		// dataType
 		if (element.element("dataType") == null) {
-			throw new Exception("节点config/firms/firm/dataType不存在,停止解析");
+			// 任务没有配置就从厂商节点下获取
+			task.DataType = XmlUtil.GetXmlElement(firmElement, "dataType").getText();
 		} else {
 			task.DataType = element.element("dataType").getText();
 		}
@@ -324,16 +332,48 @@ public class SystemConfig {
 		if (element.element("regionReport") != null) {
 			task.RegionReport = element.element("regionReport").getText() != "0";
 			task.DefaultRegion = element.element("regionReport").attribute("default").getText();
+		} else if (firmElement.element("regionReport") != null) {
+			task.RegionReport = firmElement.element("regionReport").getText() != "0";
+			task.DefaultRegion = firmElement.element("regionReport").attribute("default").getText();
 		}
 		// zipName
 		if (element.element("zipName") != null) {
 			task.ZipName = element.element("zipName").getText();
+		} else {
+			if (firmElement.element("zipName") != null) {
+				task.ZipName = firmElement.element("zipName").getText();
+			}
 		}
-		task.SiteIdName = XmlUtil.GetXmlElement(element, "siteIdName", "").toUpperCase();
-		task.DeviceIdName = XmlUtil.GetXmlElement(element, "deviceIdName", "").toUpperCase();
-		task.SourceSiteIdName = XmlUtil.GetXmlElement(element, "sourceSiteIdName", "").toUpperCase();
-		task.HasCompress = XmlUtil.GetXmlElement(element, "hasCompress", true);
-		task.HasIndex = XmlUtil.GetXmlElement(element, "hasIndex", true);
+		// siteIdName(数据质量)
+		if (element.element("siteIdName") != null) {
+			task.SiteIdName = XmlUtil.GetXmlElement(element, "siteIdName", "").toUpperCase();
+		} else {
+			task.SiteIdName = XmlUtil.GetXmlElement(firmElement, "siteIdName", "").toUpperCase();
+		}
+		// deviceIdName(数据质量)
+		if (element.element("deviceIdName") != null) {
+			task.DeviceIdName = XmlUtil.GetXmlElement(element, "deviceIdName", "").toUpperCase();
+		} else {
+			task.DeviceIdName = XmlUtil.GetXmlElement(firmElement, "deviceIdName", "").toUpperCase();
+		}
+		// sourceSiteIdName(数据质量)
+		if (element.element("sourceSiteIdName") != null) {
+			task.SourceSiteIdName = XmlUtil.GetXmlElement(element, "sourceSiteIdName", "").toUpperCase();
+		} else {
+			task.SourceSiteIdName = XmlUtil.GetXmlElement(firmElement, "sourceSiteIdName", "").toUpperCase();
+		}
+		// hasCompress
+		if (element.element("hasCompress") != null) {
+			task.HasCompress = XmlUtil.GetXmlElement(element, "hasCompress", true);
+		} else {
+			task.HasCompress = XmlUtil.GetXmlElement(firmElement, "hasCompress", true);
+		}
+		// hasIndex
+		if (element.element("hasIndex") != null) {
+			task.HasIndex = XmlUtil.GetXmlElement(element, "hasIndex", true);
+		} else {
+			task.HasIndex = XmlUtil.GetXmlElement(firmElement, "hasIndex", true);
+		}		
 		task.DbAble = XmlUtil.GetXmlAttr(element, "dbAble", false);
 		task.EsAble = XmlUtil.GetXmlAttr(element, "esAble", false);
 
