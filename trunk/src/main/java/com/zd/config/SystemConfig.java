@@ -373,7 +373,13 @@ public class SystemConfig {
 			task.HasIndex = XmlUtil.GetXmlElement(element, "hasIndex", true);
 		} else {
 			task.HasIndex = XmlUtil.GetXmlElement(firmElement, "hasIndex", true);
-		}		
+		}
+		// listenSec
+		if (element.element("listenSec") != null) {
+			task.ListenSec = XmlUtil.GetXmlElement(element, "listenSec", 60);
+		} else {
+			task.ListenSec = XmlUtil.GetXmlElement(firmElement, "listenSec", 60);
+		}
 		task.DbAble = XmlUtil.GetXmlAttr(element, "dbAble", false);
 		task.EsAble = XmlUtil.GetXmlAttr(element, "esAble", false);
 

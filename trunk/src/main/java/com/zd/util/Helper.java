@@ -6,9 +6,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
@@ -25,7 +28,7 @@ import cn.zdsoft.common.model.DataTable;
 public class Helper {
 	private static int sequence5 = 1;
 	private static Lock lock = new ReentrantLock();// 定义锁对象
-	
+
 	/**
 	 * 获取当前程序所运行jar所在目录
 	 * 
@@ -119,6 +122,27 @@ public class Helper {
 			dataTable.add(row);
 		}
 		return dataTable;
+	}
+
+	/**
+	 * 将DataTable 按照5000条数据一页进行拆分成多个DataTable
+	 * @param table
+	 * @return
+	 */
+	public static List<DataTable> DataTablePage(DataTable table) {
+		int pageSize = 5000;
+		List<DataTable> list = new ArrayList<DataTable>();
+		for (int i = 0; i < 10000; i++) {
+			List<DataRow> arr = table.stream().skip(i * pageSize).limit(pageSize).collect(Collectors.toList());
+			if(arr.size()==0)
+				break;
+			DataTable t = new DataTable();
+			for (DataRow dataRow : arr) {
+				t.add(dataRow);
+			}
+			list.add(t);
+		}
+		return list;
 	}
 
 }

@@ -4,8 +4,11 @@
 修改内容:
 	1.厂商下增加任务的部分节点配置，这样可以减少任务下面的重复配置
 		具体节点包含：hasIndex, indexPath, indexName, dataName, dataType, hasCompress, zipName, regionReport, siteIdName, deviceIdName, sourceSiteIdName
+	2.一个任务就是一个线程(从kafka获取数据)，之前是把所有topic放到一起线程监听的。
+	3.任务和厂商节点下增加配置，用于配置多久写入一个文件，主要针对从kafka获取数据，默认是60秒。		
 部署说明:
-	1.
+	1.厂商或任务下配置节点，用于设置多久监听一次kafka。缺省值:60
+		<listenSec>60</listenSec>
 备注:
 	1.
 --------------------------------------------------------------------

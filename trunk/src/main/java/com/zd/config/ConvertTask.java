@@ -41,7 +41,7 @@ public class ConvertTask {
 	/**
 	 * 筛选条件
 	 */
-	public Map<String,List<ConvertFilter>> Filter;
+	public Map<String, List<ConvertFilter>> Filter;
 	/**
 	 * 转换列的集合
 	 */
@@ -78,7 +78,7 @@ public class ConvertTask {
 	/**
 	 * 是否访问ES
 	 */
-	public boolean EsAble=false;
+	public boolean EsAble = false;
 	/**
 	 * 数据库转换相关配置
 	 */
@@ -88,7 +88,7 @@ public class ConvertTask {
 	 * 需要解析的文件名内容。只要文件名里面包含了该内容就会被解析
 	 */
 	public List<String> SearchPatterns = new ArrayList<String>();
-	
+
 	/**
 	 * ES相关配置
 	 */
@@ -98,5 +98,9 @@ public class ConvertTask {
 	public String SiteIdName = "";
 	public String DeviceIdName = "";
 	public String SourceSiteIdName = "";
+	/**
+	 * 从kafka监听数据的间隔时间
+	 */
+	public int ListenSec = 60;
 
 }
