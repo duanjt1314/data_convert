@@ -36,7 +36,7 @@ import cn.zdsoft.common.model.DataTable;
  * @date 2018-12-20
  */
 public class KafKaProcess {
-	private String groupId = "data_convert1";
+	private String groupId = "data_convert";
 	private ConvertTask convertTask;
 	private ConvertFirm firmInfo;
 	private String convertId;
