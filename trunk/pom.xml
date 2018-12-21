@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>cn.zdsoft</groupId>
 	<artifactId>data_convert</artifactId>
-	<version>1.4.3</version>
+	<version>1.5.1</version>
 
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
@@ -11,7 +11,50 @@
 		<spring.version>4.2.0.RELEASE</spring.version>
 	</properties>
 
-	<!-- <build> <finalName>data_convert</finalName> <plugins> <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-compiler-plugin</artifactId> <configuration> <source>1.8</source> <target>1.8</target> </configuration> </plugin> </plugins> </build> -->
+	<build>
+		<finalName>DataConvert</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId><!-- 注意插件名 -->
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.zd.convert.DataConvertService</mainClass><!-- 这里配置主方法的类全路径 -->									
+								</transformer>
+							</transformers>							
+							<filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
@@ -58,7 +101,7 @@
 		<dependency>
 			<groupId>org.elasticsearch.client</groupId>
 			<artifactId>x-pack-transport</artifactId>
-			<version>5.2.1</version>
+			<version>5.6.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

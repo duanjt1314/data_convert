@@ -12,7 +12,7 @@ public class DataFormatTest {
 	public void testFormat() {
 		DataRow row = new DataRow();
 		row.put("NETBAR_CODE", "41521525152152");
-		String str = DataFormat.Format(null, row, "substring(row[NETBAR_CODE],7,1)");
+		String str = DataFormat.Format(null, row, "substring(row[NETBAR_CODE],7,8)");
 		System.out.println(str);
 	}
 
