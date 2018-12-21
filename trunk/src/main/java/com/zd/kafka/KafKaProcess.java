@@ -93,7 +93,8 @@ public class KafKaProcess {
 				if (records.count() > 0) {
 					for (ConsumerRecord<String, String> record : records) {
 						list.add(record.value());
-						offsets.put(new TopicPartition(record.topic(),record.partition()), new OffsetAndMetadata(record.offset()));
+						offsets.put(new TopicPartition(record.topic(),record.partition()),// 
+								new OffsetAndMetadata(record.offset()+1));//注意offset表示当前的偏移量，下次的偏移量就需要+1
 
 						// 判断数据大于5000就写入文件
 						if (list.size() == 5000) {
