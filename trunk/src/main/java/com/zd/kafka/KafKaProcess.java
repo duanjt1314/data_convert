@@ -3,7 +3,9 @@ package com.zd.kafka;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 import java.util.concurrent.Executors;
@@ -16,6 +18,8 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.zd.config.ConvertFirm;
@@ -81,20 +85,22 @@ public class KafKaProcess {
 	 */
 	private void fromKafka() {
 		List<String> list = new ArrayList<String>();
-		long time = System.currentTimeMillis();
+		long time = System.currentTimeMillis();//记录同步时间
+		Map<TopicPartition, OffsetAndMetadata> offsets =new HashMap<TopicPartition, OffsetAndMetadata>();
 		while (isRunning) {
 			try {
 				ConsumerRecords<String, String> records = consumer.poll(100);// 拉取消息
 				if (records.count() > 0) {
 					for (ConsumerRecord<String, String> record : records) {
 						list.add(record.value());
+						offsets.put(new TopicPartition(record.topic(),record.partition()), new OffsetAndMetadata(record.offset()));
 
 						// 判断数据大于5000就写入文件
 						if (list.size() == 5000) {
 							time = System.currentTimeMillis();
 							dealData(list);
 							list.clear();
-							consumer.commitAsync();
+							consumer.commitSync(offsets);//同步方式确认已经写入文件的消息
 						}
 					}
 				}
@@ -103,14 +109,14 @@ public class KafKaProcess {
 					time = System.currentTimeMillis();
 					dealData(list);
 					list.clear();
-					consumer.commitAsync();
+					consumer.commitSync();//同步方式确认所有拉取消息
 				}
 			} catch (Exception ex) {
 				LogHelper.logger.error("taskId:" + convertTask.TaskId + "转换异常，停60秒", ex);
 				wait(60);
 			}
 		}
-
+		consumer.close();		
 	}
 
 	private void wait(int seconds) {
