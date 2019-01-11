@@ -231,7 +231,9 @@ public class SystemConfig {
 		firm.Tasks = new ArrayList<ConvertTask>();
 		List tasks = element.elements("task");
 		for (Object obj : tasks) {
-			firm.Tasks.add(analysisTask((Element) obj, element));
+			ConvertTask task = analysisTask((Element) obj, element);
+			if (task != null)
+				firm.Tasks.add(task);
 		}
 		// 字典配置
 		String dicUrl = element.attribute("convertDic").getText();
@@ -254,6 +256,12 @@ public class SystemConfig {
 		ConvertTask task = new ConvertTask();
 		// id属性
 		task.TaskId = XmlUtil.GetXmlAttr(element, "id").getText();
+		// 判断是否启用
+		if (!XmlUtil.GetXmlAttr(element, "enable", true)) {
+			LogHelper.logger.warn("任务[" + task.TaskId + "]已禁用，不解析");
+			return null;
+		}
+
 		// topic属性
 		task.Topic = XmlUtil.GetXmlAttr(element, "topic", "");
 		// fileType属性
